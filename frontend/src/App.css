@@ -1,0 +1,41 @@
+.student-form {
+  position: absolute;
+  top: 0;
+  left: 300px;
+  width: 100%;
+  max-width: 600px;
+}
+
+.student-form.student-form-transition-enter {
+  opacity: 0;
+}
+
+.student-form.student-form-transition-enter-active {
+  opacity: 1;
+  left: 0;
+  transition-property: left, opacity;
+  transition-duration: .2s;
+  transition-timing-function: linear;
+}
+
+.student-form.student-form-transition-exit {
+  opacity: 1;
+  left: 0;
+}
+
+.student-form-transition-enter-done {
+  left: 0;
+}
+
+.student-form-transition-exit-done {
+  opacity: 0;
+  transition: opacity 200ms;
+}
+
+.student-form.student-form-transition-exit-active {
+  opacity: 0;
+  left: 0;
+  transition-property: left, opacity;
+  transition-duration: .2s;
+  transition-timing-function: linear;
+}
