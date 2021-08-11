@@ -18,7 +18,7 @@ export function useQuery() {
   return new URLSearchParams(useLocation().search);
 }
 
-// Never use this to dependencies array to avoid memory leak!!
+// Never use this into dependency array to avoid memory leak!!
 export function useHttp() {
   const { access_token } = useSelector(state => state.auth);
   const http = axios.create({});
