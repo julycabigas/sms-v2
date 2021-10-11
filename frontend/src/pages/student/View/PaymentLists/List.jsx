@@ -11,6 +11,7 @@ import { useQuery } from 'hooks'
 import Pagination from 'components/Pagination'
 import { PaginationWrapper } from 'styled'
 import { allPaymentList } from 'store/reducer/paymentLists'
+import { warning } from 'helpers/alert';
 
 export const List = ({ listDocs, match, student ,payment, isFetching, totalDocs }) => {
   const query = useQuery()
@@ -70,14 +71,17 @@ const ListContainer = ({ listDocs, isFetching, totalDocs }) => {
   const http = useHttp()
 
   const onDelete = React.useCallback(async (index) => {
-    const { studentId, _id: paymentListId } = listDocs[index]
-    setDisabledUpdateBtn(true)
-    const { data } = await http.put(`/api/student/${studentId}/payment_list/${paymentListId}`, { is_deleted: true })
-    if (data) {
-      setTimeout(() => {
-        dispatch( deletePaymentList({ index }) )
-        setDisabledUpdateBtn(false)
-      }, 300)
+    const deleteWarn = await warning({ title: 'Are you sure?' })
+    if (deleteWarn.isConfirmed) {
+      const { studentId, _id: paymentListId } = listDocs[index]
+      setDisabledUpdateBtn(true)
+      const { data } = await http.put(`/api/student/${studentId}/payment_list/${paymentListId}`, { is_deleted: true })
+      if (data) {
+        setTimeout(() => {
+          dispatch( deletePaymentList({ index }) )
+          setDisabledUpdateBtn(false)
+        }, 300)
+      }
     }
   }, [dispatch, listDocs])
 
@@ -104,10 +108,14 @@ const ListContainer = ({ listDocs, isFetching, totalDocs }) => {
         <tbody>
           <ListHead />
           {isFetching && (
-            <tr><style.TdSmall colSpan="5" className="text-center">Loading...</style.TdSmall></tr>
+            <tr>
+              <style.TdSmall colSpan="5" className="text-center">Loading...</style.TdSmall>
+            </tr>
           )}
           {totalDocs === 0 && !isFetching && (
-            <tr><style.TdSmall colSpan="5" className="text-center">No Results Found.</style.TdSmall></tr>
+            <tr>
+              <style.TdSmall colSpan="5" className="text-center">No Results Found.</style.TdSmall>
+            </tr>
           )}
           {listDocs && listDocs.map((doc, index) => (
             <React.Fragment key={index}>
@@ -216,10 +224,10 @@ const ListData = ({ doc, onEdit, onDelete, disabledUpdateBtn }) => (
 
 const ListHead = () => (
   <tr>
-    <style.TdSmall>Amount</style.TdSmall>
-    <style.TdSmall>Due Date</style.TdSmall>
-    <style.TdSmall>Date Paid</style.TdSmall>
-    <style.TdSmall>Status</style.TdSmall>
-    <style.TdSmall>Action</style.TdSmall>
+    <style.TdSmall className="font-weight-bold">Amount</style.TdSmall>
+    <style.TdSmall className="font-weight-bold">Due Date</style.TdSmall>
+    <style.TdSmall className="font-weight-bold">Date Paid</style.TdSmall>
+    <style.TdSmall className="font-weight-bold">Status</style.TdSmall>
+    <style.TdSmall className="font-weight-bold">Action</style.TdSmall>
   </tr>
 )

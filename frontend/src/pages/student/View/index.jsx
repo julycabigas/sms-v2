@@ -57,7 +57,7 @@ export const Index = ({ match }) => {
                 <NavLink to="/deposits">Deposits</NavLink>
               </style.LinkWrapper>
             </div>
-            <div className="col-md-10">
+            <div className="col-md-10" style={{ minHeight: '400px' }}>
               <Switch>
                 <Route path={`/payment-lists`} component={PaymentLists} />
                 <Route path={`/deposits`} component={Deposit} />

@@ -25,11 +25,15 @@ export const Edit = ({ studentDetails }) => {
     for (const [key, value] of formData.entries()) {
       payload[key] = value
     }
-    const { data } = await http.put(`/api/student/${studentDetails._id}`, payload)
+    payload.studentId = studentDetails._id;
+    if (studentDetails.plan._id !== payload.plan) {
+      console.log(payload);
+    }
+    // const { data } = await http.put(`/api/student/${studentDetails._id}`, payload)
     setTimeout(() => {
-      dispatch( getDetails({ isFetching: false, studentDetails: data }) )
+      // dispatch( getDetails({ isFetching: false, studentDetails: data }) )
       setDisabledSubmit(false)
-      history.push('/home')
+      // history.push('/home')
     }, 300)
   }, [studentDetails, dispatch, history])
 
@@ -93,7 +97,7 @@ const PaymentInfo = ({ studentDetails: _ }) => {
       <tbody>
         <TableRow label="Payment Plan:" value={
           <Select 
-            disabled
+            name="plan"
             className="form-control-sm" 
             value={planForm}
             onChange={(e) => setPlanForm(e.target.value)}

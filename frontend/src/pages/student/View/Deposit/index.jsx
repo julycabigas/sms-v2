@@ -9,6 +9,7 @@ import { Link, Route, Switch } from 'react-router-dom'
 import AddDeposit from './AddDeposit'
 import { currencies } from 'helpers/dropdown'
 import { useHttp } from 'hooks'
+import { warning } from 'helpers/alert';
 
 export const Deposit = ({ match, deposit, currency, studentId, editDeposit }) => {
   return (
@@ -56,13 +57,16 @@ const Detail = ({ deposits, studentId, index, currency, amount, date, editDeposi
 
   const onDeleteDeposit = React.useCallback(async () => {
     const _ = deposits.length && deposits[index]
-    const { data } = await http.delete(`/api/student/${studentId}/deposit/${_ && _._id}`)
-    setDisabledDelBtn(true)
-    if (data.success === true) {
-      setTimeout(() => {
-        setDisabledDelBtn(false)
-        dispatch( deleteDeposit({ _id: _ && _._id }) )
-      }, 300)
+    const deleteWarn = await warning({ title: 'Are you sure?' });
+    if (deleteWarn.isConfirmed) {
+      const { data } = await http.delete(`/api/student/${studentId}/deposit/${_ && _._id}`)
+      setDisabledDelBtn(true)
+      if (data.success === true) {
+        setTimeout(() => {
+          setDisabledDelBtn(false)
+          dispatch( deleteDeposit({ _id: _ && _._id }) )
+        }, 300)
+      }
     }
   }, [index, studentId, dispatch, deposits])
 
