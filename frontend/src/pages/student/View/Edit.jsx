@@ -10,12 +10,15 @@ import { useHttp } from 'hooks'
 import { Link, useHistory } from 'react-router-dom'
 import { getDetails } from 'store/reducer/studentDetails'
 import { useDispatch } from 'react-redux'
+import scheduleDateLists from 'helpers/scheduleDateLists'
+import { toast } from 'react-toastify';
 
 export const Edit = ({ studentDetails }) => {
   const [disabledSubmit, setDisabledSubmit] = React.useState(false)
   const dispatch = useDispatch()
   const history = useHistory()
   const http = useHttp()
+  const [_plans, set_Plans] = React.useState(null);
 
   const handleUpdateSubmit = React.useCallback(async (e) => {
     e.preventDefault()
@@ -27,15 +30,37 @@ export const Edit = ({ studentDetails }) => {
     }
     payload.studentId = studentDetails._id;
     if (studentDetails.plan._id !== payload.plan) {
-      console.log(payload);
+      const singlePlan = _plans && _plans.find(item => item._id === payload.plan)
+      const _paymentLists = scheduleDateLists(payload.payment_date_start, singlePlan)
+      const paymentLists = _paymentLists && _paymentLists.map(item => ({ 
+        due_date: item.date,
+        amount: singlePlan && singlePlan.amount,
+        status: 'Pending',
+        currency: singlePlan && singlePlan.currency,
+        plan: singlePlan && singlePlan._id,
+      }))
+      payload.paymentLists = paymentLists;
     }
-    // const { data } = await http.put(`/api/student/${studentDetails._id}`, payload)
+    const { data } = await http.put(`/api/student/${studentDetails._id}`, payload)
     setTimeout(() => {
-      // dispatch( getDetails({ isFetching: false, studentDetails: data }) )
+      dispatch( getDetails({ isFetching: false, studentDetails: data.student }) )
+      toast.success('Successfully updated.')
       setDisabledSubmit(false)
-      // history.push('/home')
     }, 300)
-  }, [studentDetails, dispatch, history])
+  }, [studentDetails, dispatch, history, _plans])
+
+  React.useEffect(() => {
+    let unmount = true
+    if (unmount) {
+      (async () => {
+        const { data } = await http.get('/api/plan/all')
+        if (unmount) {
+          set_Plans(data)
+        }
+      })()
+    }
+    return () => unmount = false
+  }, [])
 
   return (
     <form className="row" onSubmit={handleUpdateSubmit}>
@@ -46,7 +71,7 @@ export const Edit = ({ studentDetails }) => {
       </div>
       <div className="col-md-6 p-0">
         <div className="border-left p-3">
-          {studentDetails && <PaymentInfo studentDetails={studentDetails} />}
+          {studentDetails && <PaymentInfo plans={_plans} studentDetails={studentDetails} />}
         </div>
       </div>
       {studentDetails && (
@@ -64,8 +89,7 @@ const mapStateToProps = (state) => ({
 })
 export default connect(mapStateToProps)(Edit)
 
-const PaymentInfo = ({ studentDetails: _ }) => {
-  const [plans, setPlans] = React.useState([]) 
+const PaymentInfo = ({ studentDetails: _, plans: _plans }) => {
   const [paymentDateStartForm, setPaymentDateStartForm] = React.useState(_.payment_date_start)
   const [joinedDateForm, setJoinedDateForm] = React.useState(_.joined_date)
   const [planForm, setPlanForm] = React.useState(_.plan._id)
@@ -76,21 +100,6 @@ const PaymentInfo = ({ studentDetails: _ }) => {
     payment_status: _.payment_status,
   }
   const { register } = useForm({ defaultValues })
-  const http = useHttp()
-
-  React.useEffect(() => {
-    let unmount = true
-    if (unmount) {
-      (async () => {
-        const { data } = await http.get('/api/plan/all')
-        if (unmount) {
-          setPlans(data)
-          setPlanForm(_.plan._id)
-        }
-      })()
-    }
-    return () => unmount = false
-  }, [_])
 
   return (
     <Table className="table">
@@ -101,7 +110,7 @@ const PaymentInfo = ({ studentDetails: _ }) => {
             className="form-control-sm" 
             value={planForm}
             onChange={(e) => setPlanForm(e.target.value)}
-            options={['', ...plans].map(item => ({ text: item.resultName, value: item._id }))}
+            options={_plans && ['', ..._plans].map(item => ({ text: item.resultName, value: item._id }))}
           />
         } />
         <TableRow label="Payment Date Start:" value={

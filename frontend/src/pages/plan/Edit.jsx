@@ -49,7 +49,7 @@ export const Edit = (props) => {
   React.useEffect(() => {
     if (props.isEdit) {
       if (doc) {
-        setAmount(doc.amount || '')
+        setAmount(doc.amount.$numberDecimal || doc.amount || '')
         setCurrency(doc.currency || '')
         setRecurrence(doc.recurrence || '')
         setQuantity(doc.quantity || '')

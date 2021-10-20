@@ -1,6 +1,6 @@
 
 html {
-  --bg: #f9f9f9;
+  --bg: #dee2e6;
   --box-bg: #fff;
   --border-color: #dee2e6;
   --text-color: #60676d;
@@ -81,4 +81,8 @@ body {
 
 .btn {
   font-weight: 600;
+}
+
+.page-manager {
+  min-height: calc(100vh - 70px);
 }

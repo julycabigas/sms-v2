@@ -17,4 +17,7 @@ router.post('/:studentId/payment_list', protect, studentController.addPaymentLis
 router.put('/:studentId/payment_list/:paymentListId', protect, studentController.updatePaymentList);
 
 router.get('/payment/all-payment-dues', protect, studentController.allPaymentDues);
+router.post('/total-paid', protect, studentController.totalPaid);
+router.post('/downloads', protect, studentController.downloadStudents);
+router.post('/download', protect, studentController.downloadStudent);
 module.exports = router;

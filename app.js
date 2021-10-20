@@ -14,6 +14,8 @@ const app = express();
 
 const dbPath = process.env.NODE_ENV === 'production' ? process.env.DB_PROD : process.env.DB_DEV;
 
+global.__basedir = __dirname;
+
 mongoose.connect(
   dbPath, 
   {useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true}
@@ -34,6 +36,7 @@ app.use(express.static(path.join(__dirname, 'frontend/build')));
 
 // routes
 app.use('/', indexRouter);
+app.use('/storage', express.static(path.join(__dirname, '/storage')));
 app.post('/token', require('./controllers/userController').authToken);
 app.use('/api/user', usersRouter);
 app.use('/api/plan', require('./routes/planRouter'));

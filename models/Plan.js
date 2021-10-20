@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const aggregatePaginate = require('mongoose-aggregate-paginate-v2');
 
 const planSchema = new mongoose.Schema({
-  amount: Number,
+  amount: mongoose.Schema.Types.Decimal128,
   currency: String,
   quantity: Number,
   resultName: String,

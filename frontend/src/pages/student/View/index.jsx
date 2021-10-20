@@ -11,6 +11,7 @@ import { useHttp } from 'hooks'
 import { getDetails } from 'store/reducer/studentDetails'
 import { allDeposit } from 'store/reducer/depositReducer'
 import PaymentLists from './PaymentLists'
+import TotalPaid from './TotalPaid'
 
 export const Index = ({ match }) => {
   const { studentId } = useParams()
@@ -52,7 +53,7 @@ export const Index = ({ match }) => {
             <div className="col-md-2 pl-0">
               <style.LinkWrapper className="border-right p-3">
                 <NavLink to="/home">Student Info</NavLink>
-                <NavLink to="/edit">Edit Info</NavLink>
+                <NavLink to="/total-paid">Total Paid</NavLink>
                 <NavLink to="/payment-lists">Payment Lists</NavLink>
                 <NavLink to="/deposits">Deposits</NavLink>
               </style.LinkWrapper>
@@ -62,6 +63,7 @@ export const Index = ({ match }) => {
                 <Route path={`/payment-lists`} component={PaymentLists} />
                 <Route path={`/deposits`} component={Deposit} />
                 <Route exact path={`/edit`} component={Edit} />
+                <Route exact path={`/total-paid`} render={props => <TotalPaid {...props} studentId={studentId} />} />
                 <Route exact path={`/home`} component={Home} />
                 <Redirect from="/" to="/home" />
               </Switch>
