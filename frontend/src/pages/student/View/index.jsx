@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect, useDispatch } from 'react-redux'
-import { useParams, Switch, HashRouter, Route, NavLink, Redirect } from 'react-router-dom'
+import { useParams, Switch, HashRouter, Route, NavLink, Redirect, Link } from 'react-router-dom'
 import styled from 'styled-components'
 import Box from 'components/Box'
 import * as style from './index.style'
@@ -12,11 +12,24 @@ import { getDetails } from 'store/reducer/studentDetails'
 import { allDeposit } from 'store/reducer/depositReducer'
 import PaymentLists from './PaymentLists'
 import TotalPaid from './TotalPaid'
+import { BsDownload } from 'react-icons/bs';
+import { GoFilePdf } from 'react-icons/go';
 
 export const Index = ({ match }) => {
   const { studentId } = useParams()
   const dispatch = useDispatch()
   const http = useHttp()
+  const [downloading, setDownloading] = React.useState(false)
+
+  const onDownloadStudent = async () => {
+    setDownloading(true);
+    const { data } = await http.post('/api/student/download', { studentId });
+    setDownloading(false);
+    const a = document.createElement('a');
+    a.href = data;
+    a.setAttribute('download', '');
+    a.click();
+  }
 
   React.useEffect(() => {
     let unmount = true
@@ -47,7 +60,23 @@ export const Index = ({ match }) => {
 
   return (
     <MainWrapper>
-      <Box title="Details" backPath="/student">
+      <Box 
+        title="Details" 
+        backPath="/student"
+        rightHeader={(
+          <>
+            <button type="button" className="btn btn-light mr-2"
+              onClick={onDownloadStudent}  
+              disabled={downloading}
+            >
+              <BsDownload/> {downloading ? 'Downloading...' : 'Download Pdf'}
+            </button>
+            <a href={'/student-pdf/' + studentId} target="_blank" className="btn btn-light">
+              <GoFilePdf /> View Pdf
+            </a>
+          </>
+        )}  
+      >
         <HashRouter basename="/">
           <div className="row">
             <div className="col-md-2 pl-0">
