@@ -3,6 +3,64 @@ const PaymentList = require('../models/PaymentList')
 const Deposit = require('../models/Deposit')
 const { Types } = require('mongoose')
 const moment = require('moment')
+const { _htmlPdf, _createPdf } = require('./studentPdf')
+const AdmZip = require("adm-zip");
+const fs = require('fs');
+
+exports.downloadStudent = async (req, res, next) => {
+  try {
+    const { studentId } = req.body;
+    const { student, paymentLists, deposits } = await _getStudentDetails(studentId);
+    const pdf = await _htmlPdf({ student, paymentLists, deposits });
+    const filePath = `/storage/student-pdf/${student.email}_${student._id}.pdf`;
+    pdf.toFile(__basedir + filePath);
+    res.send(filePath);
+  }
+  catch(err) {
+    next(err);
+  }
+}
+
+exports.downloadStudents = async (req, res, next) => {
+  try {
+    const { studentIds } = req.body;
+    const zip = new AdmZip();
+    const pdfFiles = await Promise.all(
+      studentIds.map(async studentId => {
+        const { student, paymentLists, deposits } = await _getStudentDetails(studentId);
+        const pdf = await _htmlPdf({ student, paymentLists, deposits });
+        const filePath = `/storage/student-pdf/${student.email}_${student._id}.pdf`;
+        pdf.toFile(__basedir + filePath);
+        return filePath;
+      })
+    ); 
+    const zipFile = '/storage/student-pdf/students.zip';
+    pdfFiles.forEach(file => {
+      zip.addLocalFile(__basedir + file);
+    });
+    zip.writeZip(__basedir + zipFile);
+    pdfFiles.forEach(file => {
+      fs.unlinkSync(__basedir + '/' + file);
+    });
+    res.send(zipFile);
+  }
+  catch(err) {
+    next(err);
+  }
+}
+
+exports.streamPdf = async (req, res, next) => {
+  try {
+    const { studentId } = req.params;
+    const { student, paymentLists, deposits } = await _getStudentDetails(studentId);
+    const pdf = await _htmlPdf({ student, paymentLists, deposits });
+    const pdfViewer = _createPdf(pdf.toBase64());
+    res.send(pdfViewer);
+  }
+  catch(err) {
+    next(err)
+  }
+}
 
 exports.index = async (req, res, next) => {
   try {
@@ -51,14 +109,11 @@ exports.store = async (req, res, next) => {
       currency: deposit[0].currency
     });
     if (student) {
-      const depositPayloadMap = deposit.map(item => ({ ...item, student: student._id }))
-      const breakdownLists = paymentLists.map( item => ({ ...item, student: student._id }) )
-      const depositResult = await Deposit.insertMany(depositPayloadMap)
-      const _paymentLists = await PaymentList.insertMany(breakdownLists)
+      const listData = await _changePaymentAndDeposit({ studentId: student._id, deposits: deposit, paymentLists });
       res.send({ 
         student, 
-        paymentLists: _paymentLists, 
-        deposits: depositResult 
+        paymentLists: listData.paymentLists, 
+        deposits: listData.deposits 
       }); 
     }
   }
@@ -69,11 +124,20 @@ exports.store = async (req, res, next) => {
 
 exports.update = async (req, res, next) => {
   try {
-    let student = await Student.findByIdAndUpdate(req.params.studentId, { ...req.body })
-    if (student) {
-      student = await Student.findById(req.params.studentId).populate('plan')
-      res.send(student)
-    }
+    const { studentId } = req.body;
+    let student = await Student.findById(studentId);
+    const response = {}
+    const studentData = { ...req.body };
+    response.paymentLists = req.body.paymentLists && (
+      await _changePaymentList({ 
+        studentId, 
+        paymentLists: req.body.paymentLists, 
+        isUpdate: true 
+      })
+    )
+    delete studentData.paymentLists;
+    response.student = await Student.findByIdAndUpdate(req.params.studentId, { ...studentData })
+    res.send(response);
   }
   catch(err) {
     next(err)
@@ -98,8 +162,11 @@ exports.getPaymentList = async (req, res, next) => {
     const { studentId } = req.params;
     const paymentListAggregate = Student.aggregate([
       {
-        $match: { is_deleted: false, student: new Types.ObjectId(studentId) }
+        $match: { is_deleted: false, student: new Types.ObjectId(studentId) },
       },
+      {
+        $sort: { due_date: 1 },
+      }
     ]);
     const paymentList = await PaymentList.aggregatePaginate(paymentListAggregate, { page, limit: 15 });
     res.send(paymentList);
@@ -207,4 +274,60 @@ exports.allPaymentDues = async (req, res, next) => {
   catch(err) {
     next(err)
   }
+}
+
+exports.totalPaid = async (req, res, next) => {
+  try {
+    const { studentId } = req.body;
+    const paymentLists = await PaymentList.find({ 
+      student: new Types.ObjectId(studentId),
+      status: 'Paid',
+    });
+    const deposits = await Deposit.find({ student: new Types.ObjectId(studentId) });
+    res.send({ paymentLists, deposits });
+  }
+  catch(err) {
+    next(err);
+  }
+}
+
+
+// Private
+async function _getStudentDetails(studentId) {
+  const student = await Student.findById(studentId).populate('plan');
+  const paymentLists = await PaymentList.find({  student: new Types.ObjectId(studentId) });
+  const deposits = await Deposit.find({  student: new Types.ObjectId(studentId) });
+  return {
+    student,
+    paymentLists,
+    deposits,
+  }
+}
+
+async function _changePaymentAndDeposit({ studentId, deposits = [], paymentLists = [], isUpdate = false }) {
+  const depositMap = deposits.map(item => ({ ...item, student: new Types.ObjectId(studentId) }));
+  const paymentListMap = paymentLists.map(item => ({ ...item, student: new Types.ObjectId(studentId) }));
+  if (isUpdate) {
+    await PaymentList.deleteMany({ 
+            status: { $ne: 'Paid' }, 
+            date_paid: null,
+            student: new Types.ObjectId(studentId),
+          }); 
+  }
+  return {
+    deposits: await Deposit.insertMany(depositMap),
+    paymentLists: await PaymentList.insertMany(paymentListMap)
+  }
+}
+
+async function _changePaymentList({ studentId, paymentLists = [], isUpdate = false }) {
+  const paymentListMap = paymentLists.map(item => ({ ...item, student: new Types.ObjectId(studentId) }));
+  if (isUpdate) {
+    await PaymentList.deleteMany({ 
+            status: { $ne: 'Paid' }, 
+            date_paid: null,
+            student: new Types.ObjectId(studentId),
+          }); 
+  }
+  return await PaymentList.insertMany(paymentListMap);
 }

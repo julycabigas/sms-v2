@@ -8,6 +8,8 @@ import Login from 'pages/login'
 import Register from 'pages/register'
 import PrivateRoute from 'components/PrivateRoute'
 import { useSelector } from 'react-redux'
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css';
 
 const [html] = document.getElementsByTagName('html')
 
@@ -23,16 +25,29 @@ function App() {
   }, [isDark])
 
   return (
-    <BrowserRouter>
-      <Switch>
-        <PrivateRoute path="/plan" component={Plan} />
-        <PrivateRoute path="/student" component={Student} />
-        <PrivateRoute path="/all-payment-dues" component={AllPaymentDues} />
-        <Route path="/login" component={Login} />
-        <Route path="/register" component={Register} />
-        <Redirect from="/" to="/student" />
-      </Switch>
-    </BrowserRouter>
+    <>
+      <BrowserRouter>
+        <Switch>
+          <PrivateRoute path="/plan" component={Plan} />
+          <PrivateRoute path="/student" component={Student} />
+          <PrivateRoute path="/all-payment-dues" component={AllPaymentDues} />
+          <Route path="/login" component={Login} />
+          <Route path="/register" component={Register} />
+          <Redirect from="/" to="/student" />
+        </Switch>
+      </BrowserRouter>
+      <ToastContainer 
+        position="bottom-right"
+        autoClose={4000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
+    </>
   );
 }
 

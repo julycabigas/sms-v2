@@ -41,7 +41,7 @@ function SearchBar() {
 
   return (
     <SearchWrapper onSubmit={handleSubmit}>
-      <div className="filter-input" tabIndex="0">
+      <div className="filter-input" tabIndex="0" style={{ fontWeight: '600' }}>
         Filter
       </div>
       <SearchIncludes tabIndex="0">

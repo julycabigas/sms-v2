@@ -5,6 +5,7 @@ const width = '500px'
 export const SearchWrapper = styled.form`
 	position: relative;
 	margin-bottom: 15px;
+  z-index: 1;
 	.filter-input {
 		max-width: ${width};
 	 	border-radius: 7px;

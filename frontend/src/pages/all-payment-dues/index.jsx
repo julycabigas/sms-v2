@@ -65,7 +65,7 @@ const List = ({ doc }) => {
       <td 
         onClick={() => history.push(`/student/${doc.student._id}#/payment-lists`)}
       >
-        {doc.amount} {doc.currency}
+        {doc.amount.$numberDecimal} {doc.currency}
       </td>
       <td 
         onClick={() => history.push(`/student/${doc.student._id}#/payment-lists`)}

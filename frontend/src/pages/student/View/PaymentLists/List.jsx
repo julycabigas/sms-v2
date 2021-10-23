@@ -12,6 +12,7 @@ import Pagination from 'components/Pagination'
 import { PaginationWrapper } from 'styled'
 import { allPaymentList } from 'store/reducer/paymentLists'
 import { warning } from 'helpers/alert';
+import { toast } from 'react-toastify';
 
 export const List = ({ listDocs, match, student ,payment, isFetching, totalDocs }) => {
   const query = useQuery()
@@ -78,6 +79,7 @@ const ListContainer = ({ listDocs, isFetching, totalDocs }) => {
       const { data } = await http.put(`/api/student/${studentId}/payment_list/${paymentListId}`, { is_deleted: true })
       if (data) {
         setTimeout(() => {
+          toast.success('Successfully Deleted.')
           dispatch( deletePaymentList({ index }) )
           setDisabledUpdateBtn(false)
         }, 300)
@@ -96,6 +98,7 @@ const ListContainer = ({ listDocs, isFetching, totalDocs }) => {
     const { studentId, _id: paymentListId } = listDocs[editList.index]
     const { data } = await http.put(`/api/student/${studentId}/payment_list/${paymentListId}`, {...payload})
     setTimeout(() => {
+      toast.success('Successfully updated.');
       dispatch( updatePaymentList({ index: editList.index, paymentData: data }) )
       setDisabledUpdateBtn(false)
       setEditList({ index: null, isEdit: false })
@@ -150,7 +153,7 @@ const FormUpdate = ({ doc, onCancel, disabledUpdateBtn }) => {
           <Input 
             type="number"
             required
-            defaultValue={doc.amount}
+            defaultValue={doc.amount.$numberDecimal || doc.amount}
             name="amount"
             className="form-control-sm mr-2"
           />
@@ -205,7 +208,7 @@ const FormUpdate = ({ doc, onCancel, disabledUpdateBtn }) => {
 
 const ListData = ({ doc, onEdit, onDelete, disabledUpdateBtn }) => (
   <tr>
-    <style.TdSmall>{doc && doc.amount} {doc && doc.currency}</style.TdSmall>
+    <style.TdSmall>{doc && doc.amount.$numberDecimal || doc.amount} {doc && doc.currency}</style.TdSmall>
     <style.TdSmall>{doc && doc.due_date && moment.utc(doc.due_date).format('MMM DD, YYYY')}</style.TdSmall>
     <style.TdSmall>{(doc && doc.date_paid) ? moment.utc(doc.date_paid).format('MMM DD, YYYY') : '---'}</style.TdSmall>
     <style.TdSmall>{doc && doc.status}</style.TdSmall>

@@ -3,10 +3,16 @@ import { connect } from 'react-redux'
 import { Table } from '../index.style'
 import styled from 'styled-components'
 import moment from 'moment'
+import { Link } from 'react-router-dom'
 
 export const HomeView = ({ studentDetails }) => {
   return (
     <div className="row">
+      <div className="col-md-12">
+        <div className="py-3 border-bottom">
+          <Link to="/edit" className="btn btn-sm btn-primary px-4">Edit</Link>
+        </div>
+      </div>
       <div className="col-md-6 p-0">
         <div className="p-3">
           {studentDetails && <StudentInfo studentDetails={studentDetails} />}

@@ -96,7 +96,7 @@ const Detail = ({ deposits, studentId, index, currency, amount, date, editDeposi
 }
 
 const Form = ({ deposits, studentId, depositIndex, currency, amount, date, onCancel }) => {
-  const [formAmount, setFormAmount] = React.useState(amount)
+  const [formAmount, setFormAmount] = React.useState(amount.$numberDecimal)
   const [formDate, setFormDate] = React.useState(date)
   const [formCurrency, setFormCurrency] = React.useState(currency)
   const [disabledSubmit, setDisabledSubmit] = React.useState(false)
@@ -204,10 +204,10 @@ const DepositWrapper = ({ children }) => (
 )
 
 const Data = ({ currency, amount, date }) => <>
-    <style.HeadTd>
-      {amount} <span>{currency}</span>
-    </style.HeadTd>
-    <style.HeadTd>
+    <style.Td>
+      {amount.$numberDecimal} <span>{currency}</span>
+    </style.Td>
+    <style.Td>
       {moment.utc(date).format('MMM DD, YYYY')}
-    </style.HeadTd>
+    </style.Td>
   </>

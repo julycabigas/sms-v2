@@ -16,6 +16,10 @@ export const pipelines  = [
   'DA - 1000-2000 (UK)',
   'DA - 2000-5000 (UK)',
   'DA - 5000+ (UK)',
+  'DA - Blue (AU/NZ)',
+  'DA - Red (AU/NZ)',
+  'DA - Green (AU/NZ)',
+  'DA - Purple (AU/NZ)',
   ]
 
 export const funnels = [
