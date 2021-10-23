@@ -6,7 +6,7 @@
     "start": "node ./bin/www",
     "dev": "concurrently \"nodemon ./bin/www\" \"cd frontend && yarn start\"",
     "build": "cd frontend && yarn install && yarn build",
-    "install-all": "cd frontend && yarn install && yarn install"
+    "install-all": "yarn install && cd frontend && yarn install"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^1.6.0",
