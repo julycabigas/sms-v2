@@ -8,6 +8,7 @@ import { useHttp } from 'hooks'
 import styled from 'styled-components'
 import { emptyDetails } from 'store/reducer/createStudentReducer'
 import scheduleDateLists from 'helpers/scheduleDateLists'
+import moment from 'moment';
 
 export const AllDetails = ({ student_details, payment_details }) => {
   const history = useHistory()
@@ -145,7 +146,7 @@ function ColTwo({details, plan}) {
             </tr>
             <tr>
               <TitleTd>Joined Date:</TitleTd>
-              <td>{details && details.joined_date}</td>
+              <td>{details && moment(details.joined_date).format('MMM DD, YYYY')}</td>
             </tr>
           </tbody>
         </table>
