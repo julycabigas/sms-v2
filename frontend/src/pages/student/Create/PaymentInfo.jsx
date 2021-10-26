@@ -81,7 +81,7 @@ export const PaymentInfo = (props) => {
         <FormGroup>
           <div className="row">
             <div className="col-md-4">
-              <Input type="number" label="Deposit" placeholder="Amount" 
+              <Input type="any" label="Deposit" placeholder="Amount" 
                 {...register('amount', { required: true })}
               />
             </div>

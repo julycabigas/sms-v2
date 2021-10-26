@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect, useDispatch } from 'react-redux'
-import { useParams, Switch, HashRouter, Route, NavLink, Redirect, Link } from 'react-router-dom'
+import { useParams, Switch, HashRouter, Route, NavLink, Redirect } from 'react-router-dom'
 import styled from 'styled-components'
 import Box from 'components/Box'
 import * as style from './index.style'

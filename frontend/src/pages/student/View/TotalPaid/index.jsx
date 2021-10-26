@@ -40,7 +40,7 @@ export const TotalPaid = ({ studentId }) => {
         setPaymentList(_list);
       }
     })()
-  }, [])
+  }, [studentId])
 
 
   return (
