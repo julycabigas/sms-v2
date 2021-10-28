@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect, useDispatch } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { allStudent } from 'store/reducer/studentReducer'
+import { allStudent, deleteStudent } from 'store/reducer/studentReducer'
 import moment from 'moment'
 import { TableWrapper } from '../studentStyle'
 import { useQuery, useHttp } from 'hooks'
@@ -12,6 +12,8 @@ import SearchBar from './SearchBar'
 import { useHistory } from 'react-router-dom'
 import MoreOption from 'components/MoreOption'
 import { BsDownload } from 'react-icons/bs';
+import { toast } from 'react-toastify';
+import { warning } from 'helpers/alert'
 
 export const Index = ({ match, student, studentData, totalDocs }) => {
   const dispatch = useDispatch()
@@ -157,6 +159,7 @@ const Lists = ({ doc, match, onCheck, checkValue, checked }) => {
   const history = useHistory()
   const http = useHttp();
   const [downloading, setDownloading] = React.useState(false);
+  const dispatch = useDispatch();
 
   const onDownloadStudent = async (studentId) => {
     setDownloading(true);
@@ -166,6 +169,17 @@ const Lists = ({ doc, match, onCheck, checkValue, checked }) => {
     a.href = data;
     a.setAttribute('download', '');
     a.click();
+  }
+
+  const onDeleteStudent = async (studentId, index) => {
+    const deleteWarn = await warning({ title: 'Are you sure?' });
+    if (deleteWarn) {
+      const { data } = await http.delete('/api/student/delete/' + studentId);
+      if (data.success) {
+        dispatch( deleteStudent({ index }) );
+        toast.success('Successfully deleted.');
+      }
+    }
   }
 
   return (
@@ -200,6 +214,10 @@ const Lists = ({ doc, match, onCheck, checkValue, checked }) => {
           >
             {downloading ? 'Downloading...' : 'Download'}
           </button>
+          <button 
+            type="button"
+            onClick={() => onDeleteStudent(doc._id)}
+            >Delete</button>
         </MoreOption>
       </td>
     </tr>

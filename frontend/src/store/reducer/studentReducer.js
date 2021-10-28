@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
+import student from 'pages/student'
 
 const studentSlice = createSlice({
   name: 'student',
@@ -16,10 +17,15 @@ const studentSlice = createSlice({
         state.studentData = action.payload.studentData
         state.isFetching = false
       }
+    },
+    deleteStudent(state, action) {
+      if (state.studentData.docs) {
+        state.studentData.docs.splice(action.payload.index, 1);
+      }
     }
   }
 })
 
-export const { allStudent } = studentSlice.actions
+export const { allStudent, deleteStudent } = studentSlice.actions
 
 export default studentSlice.reducer

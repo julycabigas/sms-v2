@@ -291,6 +291,14 @@ exports.totalPaid = async (req, res, next) => {
   }
 }
 
+exports.deleleStudentPaymentListsAndDeposits = async (req, res, next) => {
+  const { studentId } = req.params;
+  await Student.findByIdAndDelete(studentId);
+  await PaymentList.deleteMany({ student: new Types.ObjectId(studentId) });
+  await Deposit.deleteMany({ student: new Types.ObjectId(studentId) });
+  res.send({ success: true });
+}
+
 
 // Private
 async function _getStudentDetails(studentId) {

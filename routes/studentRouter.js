@@ -20,4 +20,5 @@ router.get('/payment/all-payment-dues', protect, studentController.allPaymentDue
 router.post('/total-paid', protect, studentController.totalPaid);
 router.post('/downloads', protect, studentController.downloadStudents);
 router.post('/download', protect, studentController.downloadStudent);
+router.delete('/delete/:studentId', studentController.deleleStudentPaymentListsAndDeposits);
 module.exports = router;
