@@ -173,7 +173,7 @@ const Lists = ({ doc, match, onCheck, checkValue, checked }) => {
 
   const onDeleteStudent = async (studentId, index) => {
     const deleteWarn = await warning({ title: 'Are you sure?' });
-    if (deleteWarn) {
+    if (deleteWarn.isConfirmed) {
       const { data } = await http.delete('/api/student/delete/' + studentId);
       if (data.success) {
         dispatch( deleteStudent({ index }) );
