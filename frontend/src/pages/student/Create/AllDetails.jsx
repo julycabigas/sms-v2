@@ -116,7 +116,7 @@ function ColTwo({details, plan}) {
               <td>{details && details.deposit && 
               (<>
                 <strong>{details.deposit[0].amount} {details.deposit[0].currency}</strong> 
-                <span> / {details.deposit[0].date}</span>
+                <span> / {details.deposit[0].date && moment.utc(details.deposit[0].date).format('MMM DD, YYYY')}</span>
               </>)}
             </td>
             </tr>
@@ -126,7 +126,7 @@ function ColTwo({details, plan}) {
             </tr>
             <tr>
               <TitleTd>Payment Date Start:</TitleTd>
-              <td>{details && details.payment_date_start}</td>
+              <td>{details && moment.utc(details.payment_date_start).format('MMM DD, YYYY')}</td>
             </tr>
             <tr>
               <TitleTd>Signed Contract:</TitleTd>
@@ -146,7 +146,7 @@ function ColTwo({details, plan}) {
             </tr>
             <tr>
               <TitleTd>Joined Date:</TitleTd>
-              <td>{details && moment(details.joined_date).format('MMM DD, YYYY')}</td>
+              <td>{details && moment.utc(details.joined_date).format('MMM DD, YYYY')}</td>
             </tr>
           </tbody>
         </table>
