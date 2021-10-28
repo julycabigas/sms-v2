@@ -24,7 +24,7 @@ export const AllDetails = ({ student_details, payment_details }) => {
     const lists = scheduleDateLists(details.payment_date_start, plan)
     const paymentLists = lists && lists.map(item => ({ 
       due_date: item.date,
-      amount: plan && plan.amount,
+      amount: plan.amount && plan.amount.$numberDecimal,
       status: 'Pending',
       currency: plan && plan.currency,
       plan: plan && plan._id,
