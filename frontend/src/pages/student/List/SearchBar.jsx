@@ -47,7 +47,7 @@ function SearchBar({ allPlans }) {
     e.preventDefault()
     setTimeout(() => setShowForm(!showForm), 300);
     const formData = new FormData(e.target)
-    formData.append('payment_status_updated', paymentStatusUpdated)
+    if (paymentStatusUpdated) formData.append('payment_status_updated', paymentStatusUpdated)
     for (const [key, value] of formData.entries()) {
       if (value !== '') {
         query.set(key, value)
