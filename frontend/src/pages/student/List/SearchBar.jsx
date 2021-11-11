@@ -13,7 +13,8 @@ function SearchBar({ allPlans }) {
   const history = useHistory()
   const [planForm, setPlanForm] = useState(query.get('plan') || '')
   const [showForm, setShowForm] = useState(false)
-  const [paymentStatusUpdated, setPaymentStatusUpdated] = useState(null)
+  const [paymentStatusUpdatedFrom, setPaymentStatusUpdatedFrom] = useState(null)
+  const [paymentStatusUpdatedTo, setPaymentStatusUpdatedTo] = useState(null)
 
   const handleDeleteSearch = (keyword) => {
     const querySearch = new URLSearchParams(query.toString());
@@ -47,7 +48,9 @@ function SearchBar({ allPlans }) {
     e.preventDefault()
     setTimeout(() => setShowForm(!showForm), 300);
     const formData = new FormData(e.target)
-    if (paymentStatusUpdated) formData.append('payment_status_updated', paymentStatusUpdated)
+    if (paymentStatusUpdatedTo && paymentStatusUpdatedFrom) {
+      formData.append('payment_status_updated', `${paymentStatusUpdatedFrom}~${paymentStatusUpdatedTo}`)
+    }
     for (const [key, value] of formData.entries()) {
       if (value !== '') {
         query.set(key, value)
@@ -139,12 +142,25 @@ function SearchBar({ allPlans }) {
             />
           </div>
           <div className="form-group">
-            <DatePicker
-              label="Payment Status Updated At"
-              className="regular"
-              format="YYYY-MM-DD"
-              onChange={(date, dateString) => setPaymentStatusUpdated(dateString)}
-            />
+            <label>Payment Status Updated At</label>
+            <div className="row">
+              <div className="col-md-6">
+                <DatePicker
+                  label="From"
+                  className="regular"
+                  format="YYYY-MM-DD"
+                  onChange={(date, dateString) => setPaymentStatusUpdatedFrom(dateString)}
+                />
+              </div>
+              <div className="col-md-6">
+                <DatePicker
+                  label="To"
+                  className="regular"
+                  format="YYYY-MM-DD"
+                  onChange={(date, dateString) => setPaymentStatusUpdatedTo(dateString)}
+                />
+              </div>
+            </div>
           </div>
           <div className="text-right">
             <button type="button" className="btn btn-light mr-2" 

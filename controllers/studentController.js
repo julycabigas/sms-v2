@@ -76,13 +76,16 @@ exports.index = async (req, res, next) => {
     if (payment_status) match.payment_status = payment_status
     if (plan) match.plan = new Types.ObjectId(plan)
     if (payment_status_updated) {
-      match['payment_status_updated'] = moment(payment_status_updated).format('YYYY-MM-DD')
+      const [fromUpdatedAt, toUpdatedAt] = payment_status_updated.split('~');
+      const from = moment(fromUpdatedAt).format();
+      const to = moment(toUpdatedAt).format();
+      match['payment_status_updated'] = {
+        $gte: from,
+        $lte: to,
+      }
     }
-
     const studentAgregate = Student.aggregate([
-      {
-        $match: match
-      },
+      { $match: match },
       {
         $lookup: {
           from: 'plans',
