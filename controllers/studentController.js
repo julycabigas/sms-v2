@@ -65,7 +65,7 @@ exports.streamPdf = async (req, res, next) => {
 exports.index = async (req, res, next) => {
   try {
     const page = req.query.page || 1;
-    const { name, email, plan, sales_rep, signed_contract, payment_status } = req.query;
+    const { name, email, plan, sales_rep, signed_contract, payment_status, payment_status_updated } = req.query;
 
     const match = {}
 
@@ -75,6 +75,9 @@ exports.index = async (req, res, next) => {
     if (signed_contract) match.signed_contract = signed_contract
     if (payment_status) match.payment_status = payment_status
     if (plan) match.plan = new Types.ObjectId(plan)
+    if (payment_status_updated) {
+      match['payment_status_updated'] = moment(payment_status_updated).format('YYYY-MM-DD')
+    }
 
     const studentAgregate = Student.aggregate([
       {
@@ -136,7 +139,10 @@ exports.update = async (req, res, next) => {
       })
     )
     delete studentData.paymentLists;
-    response.student = await Student.findByIdAndUpdate(req.params.studentId, { ...studentData })
+    response.student = await Student.findByIdAndUpdate(req.params.studentId, { 
+      ...studentData,
+      payment_status_updated: moment().format('YYYY-MM-DD'), 
+    })
     res.send(response);
   }
   catch(err) {

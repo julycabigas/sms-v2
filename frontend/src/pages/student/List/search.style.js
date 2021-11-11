@@ -7,21 +7,18 @@ export const SearchWrapper = styled.form`
 	margin-bottom: 15px;
   z-index: 1;
 	.filter-input {
-		max-width: ${width};
 	 	border-radius: 7px;
-	  border: 1px solid var(--border-color);
 	  background: var(--box-bg);
     display: flex;
     align-items: center;
     max-width: 280px;
     height: 40px;
-		box-shadow: 0px 3px 6px #0000001f;
-    border: 0;
-    padding: 10px;
+    padding: 10px 15px;
     cursor: pointer;
+    color: var(--text-color);
 	}
 	&:focus-within > .filter-input + div {
-		visibility: visible;
+		/* visibility: visible; */
 	}
 `
 
@@ -33,10 +30,37 @@ export const SearchIncludes = styled.div`
     background: var(--box-bg);
     border-radius: 7px;
     border-top: 0;
-    visibility: hidden;
+    /* visibility: hidden; */
     box-shadow: 0px 3px 6px #0000001f;
     margin-top: 5px;
-    input, select {
-		margin-bottom: 10px;
-	}
 `
+
+export const DividerQuery = styled.div`
+  margin: 0 10px;
+  height: 20px;
+  width: 1px;
+  background: #60676d;
+`;
+
+export const Query = styled.div`
+  background-color: var(--box-bg);
+  margin-right: 7px;
+  padding: 6px;
+  padding-left: 12px;
+  border-radius: 30px;
+  .text {
+    margin-right: 8px;
+    font-size: 0.8em;
+  }
+  button {
+    width: 20px;
+    height: 20px;
+    border: 0;
+    border-radius: 50%;
+    font-size: 14px;
+    background: transparent;
+    &:hover {
+      background: var(--bg);
+    }
+  }
+`;

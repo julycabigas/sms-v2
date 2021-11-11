@@ -8,8 +8,12 @@ export const planSlice = createSlice({
     error: null,
     isEdit: false,
     editId: null,
+    all: [],
   },
   reducers: {
+    setAllPlan: (state, action) => {
+      state.all = action.payload;
+    },
     fetch: (state, action) => {
       if (action.payload.isFetching) {
         state.isFetching = true
@@ -39,6 +43,6 @@ export const planSlice = createSlice({
   }
 })  
 
-export const { fetch, isFetching, setEdit, updateDocs, addDocs } = planSlice.actions
+export const { fetch, isFetching, setEdit, updateDocs, addDocs, setAllPlan } = planSlice.actions
 
 export default planSlice.reducer

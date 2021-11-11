@@ -8,6 +8,7 @@ const studentSchema = new mongoose.Schema({
   payment_method: { type: String, default: null, },
   sales_rep: { type: String, default: null, },
   payment_status: { type: String, default: null, },
+  payment_status_updated: { type: String, default: null, },
   first_name: { type: String, default: null, },
   last_name: { type: String, default: null, },
   email: { type: String, default: null, },

@@ -14,6 +14,7 @@ import MoreOption from 'components/MoreOption'
 import { BsDownload } from 'react-icons/bs';
 import { toast } from 'react-toastify';
 import { warning } from 'helpers/alert'
+import { setAllPlan } from 'store/reducer/planReducer'
 
 export const Index = ({ match, student, studentData, totalDocs }) => {
   const dispatch = useDispatch()
@@ -63,6 +64,17 @@ export const Index = ({ match, student, studentData, totalDocs }) => {
     }
     return () => unmount = false
   }, [dispatch, queries])
+
+  React.useEffect(() => {
+    let mounted = true;
+    if (mounted) {
+      (async () => {
+        const { data } = await http.get('/api/plan/all')
+        dispatch( setAllPlan(data) );
+      })()
+    }
+    return () => dispatch( setAllPlan([]) );
+  }, [dispatch])
 
   return (
     <>
@@ -173,7 +185,7 @@ const Lists = ({ doc, match, onCheck, checkValue, checked }) => {
 
   const onDeleteStudent = async (studentId, index) => {
     const deleteWarn = await warning({ title: 'Are you sure?' });
-    if (deleteWarn) {
+    if (deleteWarn.isConfirmed) {
       const { data } = await http.delete('/api/student/delete/' + studentId);
       if (data.success) {
         dispatch( deleteStudent({ index }) );
