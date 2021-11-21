@@ -210,7 +210,7 @@ const Lists = ({ doc, match, onCheck, checkValue, checked }) => {
         <br/>
         <span style={{ fontSize: '0.8em' }}>{doc.email}</span>    
       </td>
-      <td onClick={() => history.push(`${match.url}/${doc._id}`)}>{doc.plan.length && doc.plan[0].resultName}</td>
+      <td onClick={() => history.push(`${match.url}/${doc._id}`)}>{doc.plan && doc.plan.resultName}</td>
       <td onClick={() => history.push(`${match.url}/${doc._id}`)}>{doc.signed_contract}</td>
       <td onClick={() => history.push(`${match.url}/${doc._id}`)}>{doc.sales_rep}</td>
       <td onClick={() => history.push(`${match.url}/${doc._id}`)}>{doc.payment_status}</td>

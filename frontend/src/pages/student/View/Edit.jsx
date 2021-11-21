@@ -19,6 +19,8 @@ export const Edit = ({ studentDetails }) => {
   const history = useHistory()
   const http = useHttp()
   const [_plans, set_Plans] = React.useState(null);
+  const [paymentStatusForm, setPaymentStatusForm] = React.useState(null);
+
 
   const handleUpdateSubmit = React.useCallback(async (e) => {
     e.preventDefault()
@@ -41,13 +43,16 @@ export const Edit = ({ studentDetails }) => {
       }))
       payload.paymentLists = paymentLists;
     }
+    if (paymentStatusForm && (studentDetails.payment_status !== paymentStatusForm)) {
+      payload.paymentStatusHasChange = true;
+    }
     const { data } = await http.put(`/api/student/${studentDetails._id}`, payload)
     setTimeout(() => {
       dispatch( getDetails({ isFetching: false, studentDetails: data.student }) )
       toast.success('Successfully updated.')
       setDisabledSubmit(false)
     }, 300)
-  }, [studentDetails, dispatch, history, _plans])
+  }, [studentDetails, dispatch, history, _plans, paymentStatusForm])
 
   React.useEffect(() => {
     let unmount = true
@@ -71,7 +76,7 @@ export const Edit = ({ studentDetails }) => {
       </div>
       <div className="col-md-6 p-0">
         <div className="border-left p-3">
-          {studentDetails && <PaymentInfo plans={_plans} studentDetails={studentDetails} />}
+          {studentDetails && <PaymentInfo plans={_plans} studentDetails={studentDetails} onPaymentStatusChange={(e) => setPaymentStatusForm(e.target.value)} />}
         </div>
       </div>
       {studentDetails && (
@@ -89,7 +94,7 @@ const mapStateToProps = (state) => ({
 })
 export default connect(mapStateToProps)(Edit)
 
-const PaymentInfo = ({ studentDetails: _, plans: _plans }) => {
+const PaymentInfo = ({ studentDetails: _, plans: _plans, onPaymentStatusChange }) => {
   const [paymentDateStartForm, setPaymentDateStartForm] = React.useState(_.payment_date_start)
   const [joinedDateForm, setJoinedDateForm] = React.useState(_.joined_date)
   const [planForm, setPlanForm] = React.useState(_.plan._id)
@@ -152,6 +157,7 @@ const PaymentInfo = ({ studentDetails: _, plans: _plans }) => {
             required
             className="form-control-sm"
             {...register('payment_status')}
+            onChange={onPaymentStatusChange}
             options={['', ...paymentStatus].map(value => ({ value }))}
           />
         } />

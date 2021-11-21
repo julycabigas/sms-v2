@@ -84,18 +84,13 @@ exports.index = async (req, res, next) => {
         $lte: to,
       }
     }
-    const studentAgregate = Student.aggregate([
-      { $match: match },
-      {
-        $lookup: {
-          from: 'plans',
-          localField: 'plan',
-          foreignField: '_id',
-          as: 'plan'
-        },
-      },
-    ]);
-    const student = await Student.aggregatePaginate(studentAgregate, { page, limit: process.env.LIMIT });
+
+    const options = { 
+      page, 
+      limit: process.env.LIMIT,
+      populate: 'plan',
+    };
+    const student = await Student.paginate({ ...match }, options);
     res.send(student);
   }
   catch(err) {
@@ -141,10 +136,13 @@ exports.update = async (req, res, next) => {
         isUpdate: true 
       })
     )
+    if (req.body.paymentStatusHasChange) {
+      studentData.payment_status_updated = moment().format('YYYY-MM-DD');
+    }
     delete studentData.paymentLists;
+    delete studentData.paymentStatusHasChange;
     response.student = await Student.findByIdAndUpdate(req.params.studentId, { 
       ...studentData,
-      payment_status_updated: moment().format('YYYY-MM-DD'), 
     })
     res.send(response);
   }
@@ -268,16 +266,27 @@ exports.deleteDeposit = async (req, res, next) => {
 
 exports.allPaymentDues = async (req, res, next) => {
   try {
-    const now = moment().format();
-    const _7DaysAgo = moment().add(-7, 'days');
-    const lists = await PaymentList.find({  
-      due_date: {
+    let due_date = {};
+    if (req.query.dues) {
+      const [fromDue, toDue] = req.query.dues.split('~');
+      due_date = { 
+        $lte: toDue,
+        $gte: fromDue,
+      };
+    } else {
+      const now = moment().format();
+      const _7DaysAgo = moment().add(-7, 'days');
+      due_date = {
         $lte: now,
         $gte: _7DaysAgo,
-      }
+      };
+    }
+    const lists = await PaymentList.find({  
+      due_date
     })
       .populate('student')
       .populate('plan')
+      .sort('due_date');
     res.send(lists)
   }
   catch(err) {

@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const aggregatePaginate = require('mongoose-aggregate-paginate-v2');
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 const studentSchema = new mongoose.Schema({
   payment_date_start: { type: Date, default: null, },
@@ -26,6 +26,6 @@ studentSchema.index({
   email: 'text', 
 });
 
-studentSchema.plugin(aggregatePaginate);
+studentSchema.plugin(mongoosePaginate);
 
 module.exports = mongoose.model('Student', studentSchema);

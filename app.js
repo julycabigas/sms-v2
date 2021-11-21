@@ -12,12 +12,10 @@ const usersRouter = require('./routes/users');
 
 const app = express();
 
-const dbPath = process.env.NODE_ENV === 'production' ? process.env.DB_PROD : process.env.DB_DEV;
-
 global.__basedir = __dirname;
 
 mongoose.connect(
-  dbPath, 
+  process.env.DB_PROD, 
   {useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true}
 );
 db.on('error', console.error.bind(console, 'connection error:'));

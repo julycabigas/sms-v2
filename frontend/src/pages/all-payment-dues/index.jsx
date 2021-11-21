@@ -2,24 +2,26 @@ import React from 'react'
 import Box from 'components/Box'
 import { TableWrapper } from '../student/studentStyle'
 import BaseLayout from 'layouts/BaseLayout'
-import { useHttp } from 'hooks'
+import { useHttp, useQuery } from 'hooks'
 import moment from 'moment'
 import { Link, useHistory } from 'react-router-dom'
 
 export const Index = () => {
   const http = useHttp()
   const [lists, setLists] = React.useState(null)
+  const query = useQuery();
+  const duesQuery = query.toString();
 
   React.useEffect(() => {
     let unmount = true
     if (unmount) {
       (async () => {
-        const { data } = await http.get('/api/student/payment/all-payment-dues')
+        const { data } = await http.get('/api/student/payment/all-payment-dues?' + duesQuery)
         if (unmount) setLists(data)
       })()
     }
     return () => unmount = false
-  }, [])
+  }, [duesQuery])
   
   return (
     <Wrapper>
@@ -83,36 +85,53 @@ const List = ({ doc }) => {
   )
 }
 
-const Wrapper = ({ children }) => (
-  <BaseLayout>
-    <Box 
-      title={<>
-          All Payment Dues
-          <div style={{ fontSize: '0.65em', fontWeight: '400' }}>
-            All payment dues that is within 7 days will show up here
-          </div>
-        </>} 
-      hasBackBtn={false}
-      maxWidth="100%"
-      rightHeader={''}
-    >
-      <div className="py-3">
-        <TableWrapper className="table-responsive">
-          <table className="table mb-0">
-            <tbody>
-              <tr>
-                <th>Name</th>
-                <th>Payment Plan</th>
-                <th>Due Date</th>
-                <th>Amount</th>
-                <th>Status</th>
-                <th>Action</th>
-              </tr>
-              {children}
-            </tbody>
-          </table>
-        </TableWrapper>
-      </div>
-  </Box>
-</BaseLayout>
-)
+
+const Wrapper = ({ children }) => {
+  const query = useQuery();
+
+  const duesQuery = () => {
+    if (!query.get('dues')) return;
+    const [from, to] = query.get('dues').split('~');
+    return { from, to };
+  }
+
+  return (
+    <BaseLayout>
+      <Box 
+        title={<>
+            All Payment Dues
+            {duesQuery() ? (
+              <div style={{ fontSize: '0.65em', fontWeight: '400' }}>
+                All payment dues from <strong>{moment(duesQuery().from).format('MMM DD, YYYY')}</strong> to <strong>{moment(duesQuery().to).format('MMM DD, YYYY')}</strong>
+              </div>
+            ) : (
+              <div style={{ fontSize: '0.65em', fontWeight: '400' }}>
+                All payment dues that is within 7 days will show up here
+              </div>
+            )}
+          </>} 
+        hasBackBtn={false}
+        maxWidth="100%"
+        rightHeader={''}
+      >
+        <div className="py-3">
+          <TableWrapper className="table-responsive">
+            <table className="table mb-0">
+              <tbody>
+                <tr>
+                  <th>Name</th>
+                  <th>Payment Plan</th>
+                  <th>Due Date</th>
+                  <th>Amount</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+                {children}
+              </tbody>
+            </table>
+          </TableWrapper>
+        </div>
+    </Box>
+  </BaseLayout>
+  )
+}

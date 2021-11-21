@@ -33,6 +33,9 @@ export const SearchIncludes = styled.div`
     /* visibility: hidden; */
     box-shadow: 0px 3px 6px #0000001f;
     margin-top: 5px;
+    transform: translate(-50%, -50%);
+    top: 50%;
+    left: 50%;
 `
 
 export const DividerQuery = styled.div`
@@ -63,4 +66,15 @@ export const Query = styled.div`
       background: var(--bg);
     }
   }
+`;
+
+export const SearchOverlayWrapper = styled.div`
+  background: #00000012;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  position: fixed;
+  overflow: auto;
+  padding: 10px;
 `;

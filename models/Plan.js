@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const aggregatePaginate = require('mongoose-aggregate-paginate-v2');
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 const planSchema = new mongoose.Schema({
   amount: mongoose.Schema.Types.Decimal128,
@@ -9,6 +9,6 @@ const planSchema = new mongoose.Schema({
   recurrence: String,
 }); 
 
-planSchema.plugin(aggregatePaginate);
+planSchema.plugin(mongoosePaginate);
 
 module.exports = mongoose.model('Plan', planSchema);

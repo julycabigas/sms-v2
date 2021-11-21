@@ -1,11 +1,9 @@
-const aggregatePaginate = require('mongoose-aggregate-paginate-v2');
 const Plan = require('../models/Plan');
 
 exports.index = async (req, res, next) => {
   try {
     const page = req.query.page || 1;
-    const planAggregate = Plan.aggregate();
-    const plan = await Plan.aggregatePaginate(planAggregate, { page, limit: 12 });
+    const plan = await Plan.paginate({}, { page, limit: 12 });
     res.send(plan);
   }
   catch(err) {
