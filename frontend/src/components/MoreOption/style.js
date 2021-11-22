@@ -29,7 +29,7 @@ export const MoreOptionInner = styled.div`
   display: none;
   position: absolute;
   background: var(--box-bg);
-  min-width: 200px;
+  min-width: ${props => props.minWidth || '200px'};
   right: 0;
   top: 36px;
   flex-direction: column;

@@ -6,6 +6,7 @@ import { recurrence as dReccurence, currencies } from 'helpers/dropdown'
 import { useHttp } from 'hooks'
 import { addDocs } from 'store/reducer/planReducer'
 import Box from 'components/Box'
+import { toast } from 'react-toastify';
 
 export const Create = (props) => {
   const [amount, setAmount] = React.useState('')
@@ -29,6 +30,7 @@ export const Create = (props) => {
     }
     const res = await http.post('/api/plan', payload);
     if (res.data) {
+      toast.success('Successfully Saved.');
       dispatch( addDocs(res.data) )
       setDisabledBtn(false)
       setAmount('')

@@ -2,7 +2,7 @@ import React from 'react'
 import { MoreOptionWrapper, MoreOptionInner, ButtonToggler } from './style';
 import { GrMoreVertical } from 'react-icons/gr';
 
-export default function MoreOption({ children }) {
+export default function MoreOption({ children, minWidth }) {
   const [showOption, setShowOption] = React.useState(false);
   const optionsRef = React.useRef(null);
 
@@ -26,7 +26,7 @@ export default function MoreOption({ children }) {
         <GrMoreVertical />
       </ButtonToggler>
       {showOption && (
-        <MoreOptionInner className="inner" ref={optionsRef}>
+        <MoreOptionInner className="inner" ref={optionsRef} minWidth={minWidth}>
           {children}
         </MoreOptionInner>
       )}

@@ -11,6 +11,7 @@ import { PaginationWrapper } from 'styled'
 import Box from 'components/Box';
 import { useHttp } from 'hooks'
 import BaseLayout from 'layouts/BaseLayout'
+import MoreOption from 'components/MoreOption';
 
 export const Index = ({ plan, isEdit, isFetching, editId }) => {
   const dispatch = useDispatch()
@@ -106,9 +107,12 @@ const List = ({ doc, dispatch }) => (
     <td>{doc.resultName}</td>
     <td>{doc.currency}</td>
     <td>
-      <button 
-        onClick={() => dispatch( setEdit({ isEdit: true, _id: doc._id }) )} 
-        className="btn btn-sm text-primary">Edit</button>
+      <MoreOption  minWidth="150px">
+        <a
+          onClick={() => dispatch( setEdit({ isEdit: true, _id: doc._id }) )} 
+        >Edit</a>
+        <button>Delete</button>
+      </MoreOption>
     </td>
   </tr>
 )

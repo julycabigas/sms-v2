@@ -24,12 +24,4 @@ export const Table = styled.table`
       }
     }
   }
-  tbody {
-    tr {
-      td {
-        font-size: 0.9em;
-        font-weight: 500;
-      }
-    }
-  }
 `;
