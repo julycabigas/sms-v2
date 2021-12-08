@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const aggregatePaginate = require('mongoose-aggregate-paginate-v2');
+const aggregatePaginate = require('mongoose-paginate-v2');
 const { Schema } = mongoose;
 
 const paymentList = new mongoose.Schema({

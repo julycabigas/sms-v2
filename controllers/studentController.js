@@ -6,6 +6,7 @@ const moment = require('moment')
 const { _htmlPdf, _createPdf } = require('./studentPdf')
 const AdmZip = require("adm-zip");
 const fs = require('fs');
+const { createLog } = require('../utils/activityLog');
 
 exports.downloadStudent = async (req, res, next) => {
   try {
@@ -111,6 +112,16 @@ exports.store = async (req, res, next) => {
     });
     if (student) {
       const listData = await _changePaymentAndDeposit({ studentId: student._id, deposits: deposit, paymentLists });
+      await createLog({ 
+        user: req.user.id,
+        time: new Date(),
+        type: 'New Student',
+        message: 'New student has been added by ',
+        reference: {
+          collectionName: 'students',
+          _id: student._id,
+        },
+      });
       res.send({ 
         student, 
         paymentLists: listData.paymentLists, 
@@ -144,6 +155,16 @@ exports.update = async (req, res, next) => {
     response.student = await Student.findByIdAndUpdate(req.params.studentId, { 
       ...studentData,
     })
+    await createLog({ 
+      user: req.user.id,
+      time: new Date(),
+      type: 'Update Student Info',
+      message: 'Student has been updated by ',
+      reference: {
+        collectionName: 'students',
+        _id: student._id,
+      },
+    });
     res.send(response);
   }
   catch(err) {
@@ -188,6 +209,16 @@ exports.updatePaymentList = async (req, res, next) => {
     const { paymentListId, studentId } = req.params
     let paymentList = await PaymentList.findByIdAndUpdate(paymentListId, { ...req.body })
     paymentList = await PaymentList.findById(paymentListId)
+    await createLog({ 
+      user: req.user.id,
+      time: new Date(),
+      type: 'Update Payment',
+      message: 'Payment has been updated by ',
+      reference: {
+        collectionName: 'paymentlists',
+        _id: paymentList._id,
+      },
+    });
     res.send(paymentList)
   }
   catch(err) {
@@ -208,6 +239,16 @@ exports.addPaymentList = async (req, res, next) => {
       status, 
       student
      })
+     await createLog({ 
+      user: req.user.id,
+      time: new Date(),
+      type: 'New Payment',
+      message: 'Payment has been added by ',
+      reference: {
+        collectionName: 'paymentlists',
+        _id: paymentList._id,
+      },
+    });
     res.send(paymentList)
   }
   catch(err) {
@@ -232,6 +273,16 @@ exports.updateDeposit = async (req, res, next) => {
     const { amount, currency, date, _id: depositId } = req.body;
     let deposit = await Deposit.findByIdAndUpdate(depositId, { amount, currency, date, });
     deposit = await Deposit.findById(depositId)
+    await createLog({ 
+      user: req.user.id,
+      time: new Date(),
+      type: 'Update Deposit',
+      message: 'Deposit has been updated by ',
+      reference: {
+        collectionName: 'deposits',
+        _id: deposit._id,
+      },
+    });
     res.send(deposit) 
   }
   catch(err) {
@@ -244,6 +295,16 @@ exports.addDeposit = async (req, res, next) => {
     const { studentId } = req.params;
     const { amount, date, currency } = req.body;
     let deposit = await Deposit.create({ amount, date, currency, student: studentId })
+    await createLog({ 
+      user: req.user.id,
+      time: new Date(),
+      type: 'New Deposit',
+      message: 'Deposit has been added by ',
+      reference: {
+        collectionName: 'deposits',
+        _id: deposit._id,
+      },
+    });
     res.send(deposit)
   }
   catch(err) {
@@ -256,6 +317,16 @@ exports.deleteDeposit = async (req, res, next) => {
     const { studentId, depositId } = req.params;
     const deposit = await Deposit.findByIdAndDelete(depositId)
     if (deposit) {
+      await createLog({ 
+        user: req.user.id,
+        time: new Date(),
+        type: 'Delete Deposit',
+        message: 'Deposit has been deleted by ',
+        reference: {
+          collectionName: 'deposits',
+          _id: depositId,
+        },
+      });
       res.send({ success: true })
     }
   }
