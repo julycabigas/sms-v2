@@ -47,7 +47,7 @@ exports.create = async (req, res, next) => {
     await createLog({ 
       user: req.user.id,
       time: new Date(),
-      type: 'New Plan',
+      type: 'new',
       message: 'New plan has been added by ',
       reference: {
         collectionName: 'plans',

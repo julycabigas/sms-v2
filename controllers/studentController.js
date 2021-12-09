@@ -115,7 +115,7 @@ exports.store = async (req, res, next) => {
       await createLog({ 
         user: req.user.id,
         time: new Date(),
-        type: 'New Student',
+        type: 'new',
         message: 'New student has been added by ',
         reference: {
           collectionName: 'students',
@@ -158,7 +158,7 @@ exports.update = async (req, res, next) => {
     await createLog({ 
       user: req.user.id,
       time: new Date(),
-      type: 'Update Student Info',
+      type: 'update',
       message: 'Student has been updated by ',
       reference: {
         collectionName: 'students',
@@ -188,15 +188,17 @@ exports.getPaymentList = async (req, res, next) => {
   try {
     const page = req.query.page || 1;
     const { studentId } = req.params;
-    const paymentListAggregate = Student.aggregate([
-      {
-        $match: { is_deleted: false, student: new Types.ObjectId(studentId) },
-      },
-      {
-        $sort: { due_date: 1 },
-      }
-    ]);
-    const paymentList = await PaymentList.aggregatePaginate(paymentListAggregate, { page, limit: 15 });
+    const match = {
+      is_deleted: false, 
+      student: new Types.ObjectId(studentId),
+    };
+    const options = {
+      page, 
+      limit: 15,
+      sort: { due_date: 1 },
+    } 
+
+    const paymentList = await PaymentList.paginate(match, options);
     res.send(paymentList);
   }
   catch(err) {
@@ -212,7 +214,7 @@ exports.updatePaymentList = async (req, res, next) => {
     await createLog({ 
       user: req.user.id,
       time: new Date(),
-      type: 'Update Payment',
+      type: 'update',
       message: 'Payment has been updated by ',
       reference: {
         collectionName: 'paymentlists',
@@ -242,7 +244,7 @@ exports.addPaymentList = async (req, res, next) => {
      await createLog({ 
       user: req.user.id,
       time: new Date(),
-      type: 'New Payment',
+      type: 'new',
       message: 'Payment has been added by ',
       reference: {
         collectionName: 'paymentlists',
@@ -276,7 +278,7 @@ exports.updateDeposit = async (req, res, next) => {
     await createLog({ 
       user: req.user.id,
       time: new Date(),
-      type: 'Update Deposit',
+      type: 'update',
       message: 'Deposit has been updated by ',
       reference: {
         collectionName: 'deposits',
@@ -298,7 +300,7 @@ exports.addDeposit = async (req, res, next) => {
     await createLog({ 
       user: req.user.id,
       time: new Date(),
-      type: 'New Deposit',
+      type: 'new',
       message: 'Deposit has been added by ',
       reference: {
         collectionName: 'deposits',
@@ -320,7 +322,7 @@ exports.deleteDeposit = async (req, res, next) => {
       await createLog({ 
         user: req.user.id,
         time: new Date(),
-        type: 'Delete Deposit',
+        type: 'delete',
         message: 'Deposit has been deleted by ',
         reference: {
           collectionName: 'deposits',
