@@ -33,9 +33,15 @@ export const Header = ({ isDark }) => {
 
   return (
     <h.Header>
-      <Modal show={openModal} onClose={() => setOpenModal(false)}>
-        <button>Test</button>
+      <Modal 
+        show={openModal} 
+        onClose={() => setOpenModal(false)} 
+        title="Create Student"
+      >
+        <Modal.Body>Header Test</Modal.Body>
+        <Modal.Footer>Header Test</Modal.Footer>
       </Modal>
+
       <h.Nav className="container">
         <h.Logo>ECOM Academy</h.Logo>
         <div className="links">
