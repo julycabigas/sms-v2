@@ -28,7 +28,6 @@ export const ModalOverlay = styled.div`
 `;
 
 export const ModalContainer = styled.div`
-  overflow-y: auto;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -40,9 +39,9 @@ export const ModalContainer = styled.div`
 export const ModalContent = styled.div`
   background: var(--box-bg);
   min-width: ${props => props.width || '400px'};
-  margin: 10px;
-  overflow: hidden;
-  border-radius: 5px;
+  overflow: auto;
+  border-radius: 7px;
+  max-height: 100%;
 `;
 
 export const ModalHeader = styled.div`

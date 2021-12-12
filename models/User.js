@@ -2,9 +2,35 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt')
 
 const userSchema = new mongoose.Schema({
-  name: { type: String, default: null },
-  email: { type: String, default: null, unique: true },
-  password: { type: String, default: null },
+  first_name: {
+    type: String,
+    default: null,
+  },
+  last_name: {
+    type: String,
+    default: null,
+  },
+  contact_number: {
+    type: String,
+    default: null,
+  },
+  photo: {
+    type: String,
+    default: null,
+  },
+  name: { 
+    type: String, 
+    default: null 
+  },
+  email: { 
+    type: String, 
+    default: null, 
+    unique: true, 
+  },
+  password: { 
+    type: String, 
+    default: null, 
+  },
 }, { timestamps: true })
 
 userSchema.methods.matchPassword = async function(enteredPassword) {

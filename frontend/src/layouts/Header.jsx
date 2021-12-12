@@ -7,15 +7,9 @@ import axios from 'axios'
 import { BiSun, BiMoon } from 'react-icons/bi'
 import styled from 'styled-components'
 import { setTheme } from 'store/reducer/themeReducer'
-import Modal from 'components/Modal';
 
 export const Header = ({ isDark }) => {
   const dispatch = useDispatch()
-  const [openModal, setOpenModal] = React.useState(false);
-
-  const onOpenModal = () => {
-    setOpenModal(true);
-  }
 
   const handleLogout = async () => {
     try {
@@ -33,23 +27,13 @@ export const Header = ({ isDark }) => {
 
   return (
     <h.Header>
-      <Modal 
-        show={openModal} 
-        onClose={() => setOpenModal(false)} 
-        title="Create Student"
-      >
-        <Modal.Body>Header Test</Modal.Body>
-        <Modal.Footer>Header Test</Modal.Footer>
-      </Modal>
-
       <h.Nav className="container">
         <h.Logo>ECOM Academy</h.Logo>
         <div className="links">
           <NavLink to="/student">Students</NavLink>
           <NavLink to="/all-payment-dues">All Payment Dues</NavLink>
           <NavLink to="/plan">Plans</NavLink>
-          <button onClick={onOpenModal}>Open Modal</button>
-          {/* <NavLink to="/plan">Users</NavLink> */}
+          <NavLink to="/users">Users</NavLink>
         </div>
         <div>
 

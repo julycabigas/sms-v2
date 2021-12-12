@@ -13,10 +13,10 @@ function Modal({ show, children, onClose, title, width }) {
 
   React.useEffect(() => {
     const windowClick = (e) => {
-      if ((modalContentRef && modalContentRef.current) && 
-        !(e.target === modalContentRef.current || modalContentRef.current.contains(e.target))
-      ) {
+      if (!show) return;
+      if ((modalContentRef && modalContentRef.current) && !(e.target === modalContentRef.current || modalContentRef.current.contains(e.target))) {
         onClose();
+        console.log('test')
       }
     }
     window.addEventListener('click', windowClick);
@@ -31,6 +31,8 @@ function Modal({ show, children, onClose, title, width }) {
     }
   }, [show]);
 
+  if (!show) return <div></div>;
+
   return (
     <ModalRoot>
       <CSSTransition
@@ -38,7 +40,6 @@ function Modal({ show, children, onClose, title, width }) {
         timeout={300}
         unmountOnExit
         classNames="modal"
-        onEnter={() => {}}
         onExited={onClose}
       >
         <ModalOverlay>

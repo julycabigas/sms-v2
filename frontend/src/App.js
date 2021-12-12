@@ -10,6 +10,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const Plan = React.lazy(() => import('pages/plan'));
 const Student = React.lazy(() => import('pages/student'));
+const Users = React.lazy(() => import('pages/Users'));
 const AllPaymentDues = React.lazy(() => import('pages/all-payment-dues'));
 
 const [html] = document.getElementsByTagName('html')
@@ -33,6 +34,7 @@ function App() {
             <PrivateRoute path="/plan" component={Plan} />
             <PrivateRoute path="/student" component={Student} />
             <PrivateRoute path="/all-payment-dues" component={AllPaymentDues} />
+            <PrivateRoute path="/users" component={Users} />
             <Route path="/login" component={Login} />
             <Route path="/register" component={Register} />
             <Redirect from="/" to="/student" />
