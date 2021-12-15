@@ -29,7 +29,7 @@ app.use( express.json({ limit: '50mb' }) );
 app.use( express.urlencoded({ limit: "50mb", extended: true, parameterLimit:50000 }) );
 app.use(cookieParser('secret-shhhhhhhh'));
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(express.static(path.join(__dirname, 'frontend/build')));
+app.use(express.static(path.join(__dirname, 'react/build')));
 
 // routes
 app.use('/', indexRouter);
@@ -39,7 +39,7 @@ app.use('/api/user', require('./routes/users'));
 app.use('/api/plan', require('./routes/planRouter'));
 app.use('/api/student', require('./routes/studentRouter'));
 app.get('/*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'frontend/build', 'index.html'));
+  res.sendFile(path.join(__dirname, 'react/build', 'index.html'));
 });
 
 // catch 404 and forward to error handler
