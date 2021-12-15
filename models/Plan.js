@@ -7,8 +7,16 @@ const planSchema = new mongoose.Schema({
   quantity: Number,
   resultName: String,
   recurrence: String,
+  deleted: Boolean,
 }); 
 
 planSchema.plugin(mongoosePaginate);
+
+planSchema.pre('save', async function (next) {
+  if(!this.isModified('deleted')) {
+    next()
+  }
+  this.deleted = false;
+})
 
 module.exports = mongoose.model('Plan', planSchema);

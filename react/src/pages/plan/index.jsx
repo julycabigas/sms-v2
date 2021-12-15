@@ -1,9 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect, useDispatch } from 'react-redux';
-import Create from './Create';
-import Edit from './Edit';
 import * as P from './planStyle';
-import { fetch, setEdit } from 'store/reducer/planReducer'
+import { fetch, deletePan } from 'store/reducer/planReducer'
 import Pagination from 'components/Pagination'
 import { useLocation } from 'react-router-dom'
 import { useQuery } from 'hooks'
@@ -12,15 +10,41 @@ import Box from 'components/Box';
 import { useHttp } from 'hooks'
 import BaseLayout from 'layouts/BaseLayout'
 import MoreOption from 'components/MoreOption';
+import Create from './Create';
+import { FaPlus } from 'react-icons/fa';
+import Edit from './Edit';
+import { TableWrapper as TableWrapperStyle } from 'styled';
+import { warning } from 'helpers/alert';
+import { toast } from 'react-toastify';
 
-export const Index = ({ plan, isEdit, isFetching, editId }) => {
+export const Index = ({ plan, isFetching }) => {
   const dispatch = useDispatch()
   const location = useLocation()
   const query = useQuery()
   const queries = query.toString()
   const http = useHttp()
+  const [openEditModal, setOpenEditModal] = useState(false);
+  const [openCreateModal, setOpenCreateModal] = useState(false);
+  const [planId, setPlanId] = useState(null);
 
-  React.useEffect(() => {
+
+  const onPlanEdit = (planId) => {
+    setPlanId(planId);
+    setOpenEditModal(true);
+  }
+
+  const onPlanDelete = async (planId) => {
+    const deleteWarn = await warning({ title: 'Are you sure?' });
+    if (deleteWarn.isConfirmed) {
+      const { data } = await http.delete('/api/plan/' + planId);
+      if (data.success) {
+        dispatch( deletePan({ planId }) );
+        toast.success("Successfully deleted");
+      }
+    }
+  }
+
+  useEffect(() => {
     (async () => {
       dispatch( fetch({ isFetching: true }) )
       const res = await http.get(`/api/plan${queries ? `?${queries}` : ''}`)
@@ -29,17 +53,47 @@ export const Index = ({ plan, isEdit, isFetching, editId }) => {
   }, [dispatch, queries])
 
   return (
-    <BaseLayout>
-      <div className="row">
-        <div className="col-md-4">
-          {isEdit && editId ? <Edit/> : <Create/>}
-        </div>
-
-        <div className="col-md-8">
-          <Box hasBackBtn={false} title="Plans">
+    <>
+      {openEditModal && (
+        <Edit 
+          onModalClose={() => {
+            setPlanId(null);
+            setOpenEditModal(false);
+          }} 
+          modalShow={openEditModal} 
+          planId={planId}
+        />
+      )}
+      {openCreateModal && (
+        <Create 
+          onModalClose={() => setOpenCreateModal(false)} 
+          modalShow={openCreateModal} 
+        />
+      )}
+      <BaseLayout>
+        <Box 
+          hasBackBtn={false} 
+          title="Plans" 
+          maxWidth="100%"
+          rightHeader={(
+            <button 
+              type="button" 
+              className="btn btn-primary"
+              onClick={() => setOpenCreateModal(true)}
+            >
+              <FaPlus /> <span className="ml-2">Add new</span>
+            </button>
+          )}
+        >
+          <TableWrapperStyle>
             <TableWrapper>
               {plan && plan.docs && plan.docs.map((doc, key) => (
-                <List key={key} doc={doc} dispatch={dispatch} />
+                <List 
+                  key={key} 
+                  doc={doc}
+                  onEdit={() => onPlanEdit(doc._id)}
+                  onDelete={() => onPlanDelete(doc._id)}
+                />
               ))}
               {plan && plan.totalDocs === 0 && (
                 <Waiting message="No Records Found." />
@@ -48,27 +102,24 @@ export const Index = ({ plan, isEdit, isFetching, editId }) => {
                 <Waiting message="Loading..." />
               )}
             </TableWrapper>
-            <Links plan={plan} location={location} />
-          </Box>
-        </div>
-      </div>
-    </BaseLayout>
+          </TableWrapperStyle>
+        </Box>
+        <Links plan={plan} location={location} />
+      </BaseLayout>
+    </>
   );
 }
 
 const mapStateToProps = (state) => ({
   plan: state.plan.planDocs,
   isFetching: state.plan.isFetching,
-  error: state.plan.error,
-  isEdit: state.plan.isEdit,
-  editId: state.plan.editId,
 });
 
 export default connect(mapStateToProps)(Index);
 
 const Waiting = ({ message }) => (
   <tr>
-    <td colSpan="3" className="text-center">{message}</td>
+    <td colSpan="4" className="text-center">{message}</td>
   </tr>
 )
 
@@ -88,10 +139,11 @@ const Links = ({ plan, location }) => (
 )
 
 const TableWrapper = ({ children }) => (
-  <P.Table className="table mb-3 mt-3">
+  <P.Table className="table">
     <thead>
       <tr>
         <th>Name</th>
+        <th>Quantity</th>
         <th>Currency</th>
         <th>Actions</th>
       </tr>
@@ -102,16 +154,17 @@ const TableWrapper = ({ children }) => (
   </P.Table>
 )
 
-const List = ({ doc, dispatch }) => (
+const List = ({ doc, onEdit, onDelete }) => (
   <tr>
     <td>{doc.resultName}</td>
+    <td>{doc.quantity}</td>
     <td>{doc.currency}</td>
     <td>
       <MoreOption  minWidth="150px">
         <a
-          onClick={() => dispatch( setEdit({ isEdit: true, _id: doc._id }) )} 
+          onClick={onEdit} 
         >Edit</a>
-        <button>Delete</button>
+        <button type="button" onClick={onDelete}>Delete</button>
       </MoreOption>
     </td>
   </tr>

@@ -7,5 +7,6 @@ router.get('/all', protect, planController.all);
 router.get('/:planId', protect, planController.get);
 router.post('/', protect, planController.create);
 router.post('/:id', protect, planController.edit);
+router.delete('/:id', protect, planController.deletePlan);
 
 module.exports = router;

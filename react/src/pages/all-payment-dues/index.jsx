@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Box from 'components/Box'
 import { TableWrapper } from 'styled';
 import BaseLayout from 'layouts/BaseLayout'
@@ -12,7 +12,7 @@ export const Index = () => {
   const query = useQuery();
   const duesQuery = query.toString();
 
-  React.useEffect(() => {
+  useEffect(() => {
     let unmount = true
     if (unmount) {
       (async () => {
@@ -47,7 +47,7 @@ const Waiting = ({ message }) => (
 const List = ({ doc }) => {
   const history = useHistory()
   return (
-    <tr>
+    <tr title="View">
       <td 
         onClick={() => history.push(`/student/${doc.student._id}#/payment-lists`)}
       >

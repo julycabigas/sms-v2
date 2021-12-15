@@ -194,7 +194,7 @@ const Lists = ({ doc, match, onCheck, checkValue, checked }) => {
   }
 
   return (
-    <tr>
+    <tr title="View">
       <td>
         <input 
           type="checkbox" 

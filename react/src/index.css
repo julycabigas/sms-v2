@@ -42,7 +42,7 @@ html[dark="true"] {
 }
 
 .form-control::placeholder {
-  color: #0000004d;
+  opacity: 0.6;
 }
 
 .table thead th,
@@ -90,3 +90,13 @@ body {
 .page-manager {
   min-height: calc(100vh - 70px);
 }
+
+.swal2-popup {
+  background: var(--box-bg) !important;
+  color: var(--text-color) !important;
+}
+
+.swal2-title, 
+.swal2-html-container {
+  color: var(--text-color) !important;
+} 

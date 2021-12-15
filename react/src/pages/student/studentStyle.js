@@ -7,7 +7,7 @@ export const FormWrapper = styled.div`
 `;
 
 export const Form = styled.form`
-  background: #fff;
+  background: var(--box-bg);
   padding: 0 30px;
   width: 100%;
   max-width: 600px;
@@ -34,5 +34,5 @@ export const FormHeader = styled.div`
   align-items: center;
   margin-left: -10px;
   padding: 13px 0;
-  border-bottom: 1px solid #ced4da;
+  border-bottom: 1px solid var(--border-color);
 `;

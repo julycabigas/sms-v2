@@ -2,10 +2,10 @@ import styled from 'styled-components';
 
 export const PaginationWrapper = styled.div`
   background: var(--box-bg);
-  padding: 10px 0;
-  margin-top: 30px;
-  display: flex;
-  justify-content: center;
+  padding: 10px;
+  margin-top: 10px;
+  margin-left: auto;
+  width: fit-content;
   border-radius: 5px;
   .pagination {
     margin-bottom: 0;

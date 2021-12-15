@@ -14,12 +14,12 @@ export const Nav = styled.nav`
   justify-content: space-between;
   align-items: center;
   a {
-    padding: 8px 15px;
+    padding: 14px 15px;
     margin-right: 3px;
     color: var(--link-color-nav);
     opacity: 0.9;
     font-weight: 600;
-    border-radius: 0.50em; 
+    border-radius: 4px; 
     text-decoration: none;
     &:hover,
     &.active {

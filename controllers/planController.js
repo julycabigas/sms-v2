@@ -3,8 +3,14 @@ const { createLog, logTypes } = require('../utils/activityLog');
 
 exports.index = async (req, res, next) => {
   try {
-    const page = req.query.page || 1;
-    const plan = await Plan.paginate({}, { page, limit: 12 });
+    const match = {
+      $or: [
+        { deleted: { $exists: false } },
+        { deleted: false },
+      ]
+    };
+    const options = { page: req.query.page || 1, limit: 12 };
+    const plan = await Plan.paginate(match, options);
     res.send(plan);
   }
   catch(err) {
@@ -61,7 +67,8 @@ exports.create = async (req, res, next) => {
 }
 
 exports.edit = async (req, res, next) => {
-  const plan = await Plan.findByIdAndUpdate(req.params.id, req.body);
+  let plan = await Plan.findByIdAndUpdate(req.params.id, req.body);
+  plan = await Plan.findById(req.params.id);
   await createLog({ 
     user: req.user.id,
     time: new Date(),
@@ -72,4 +79,18 @@ exports.edit = async (req, res, next) => {
     },
   });
   res.send(plan);
+}
+
+exports.deletePlan = async (req, res, next) => {
+  let plan = await Plan.findByIdAndUpdate(req.params.id, { deleted: true });
+  await createLog({ 
+    user: req.user.id,
+    time: new Date(),
+    type: logTypes.deletePlan,
+    reference: {
+      collectionName: 'plans',
+      _id: plan._id,
+    },
+  });
+  res.send({ success: true });
 }
