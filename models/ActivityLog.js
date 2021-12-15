@@ -8,11 +8,7 @@ const activityLogSchema = new Schema({
     default: null 
   },
   type: { 
-    type: String, 
-    default: null 
-  },
-  message: { 
-    type: String, 
+    type: Object, 
     default: null 
   },
   reference: {

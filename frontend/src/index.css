@@ -41,6 +41,10 @@ html[dark="true"] {
   opacity: 0.7;
 }
 
+.form-control::placeholder {
+  color: #0000004d;
+}
+
 .table thead th,
 .border-right,
 .border-left,

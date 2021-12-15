@@ -8,15 +8,15 @@ const modalRoot = document.getElementById('modal-root');
 const el = document.createElement('div');
 const body = document.body;
 
-function Modal({ show, children, onClose, title, width }) {
+function Modal({ show, children, onClose, title, width, allowClickOutside = true }) {
   const modalContentRef = React.useRef(null);
 
   React.useEffect(() => {
     const windowClick = (e) => {
       if (!show) return;
+      if (!allowClickOutside) return;
       if ((modalContentRef && modalContentRef.current) && !(e.target === modalContentRef.current || modalContentRef.current.contains(e.target))) {
         onClose();
-        console.log('test')
       }
     }
     window.addEventListener('click', windowClick);
@@ -27,6 +27,9 @@ function Modal({ show, children, onClose, title, width }) {
     if (show) {
       body.classList.add('overflow-hidden');
     } else {
+      body.classList.remove('overflow-hidden');
+    }
+    return () => {
       body.classList.remove('overflow-hidden');
     }
   }, [show]);

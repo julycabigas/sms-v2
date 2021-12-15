@@ -2,3 +2,4 @@ node_modules
 build
 .env
 storage/student-pdf/*
+storage/users/*

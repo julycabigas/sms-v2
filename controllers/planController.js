@@ -1,5 +1,5 @@
 const Plan = require('../models/Plan');
-const { createLog } = require('../utils/activityLog');
+const { createLog, logTypes } = require('../utils/activityLog');
 
 exports.index = async (req, res, next) => {
   try {
@@ -47,8 +47,7 @@ exports.create = async (req, res, next) => {
     await createLog({ 
       user: req.user.id,
       time: new Date(),
-      type: 'new',
-      message: 'New plan has been added by ',
+      type: logTypes.addPlan,
       reference: {
         collectionName: 'plans',
         _id: plan._id,
@@ -62,7 +61,15 @@ exports.create = async (req, res, next) => {
 }
 
 exports.edit = async (req, res, next) => {
-  Plan.findByIdAndUpdate(req.params.id, req.body, (err, doc) => {
-    res.send(req.body);
+  const plan = await Plan.findByIdAndUpdate(req.params.id, req.body);
+  await createLog({ 
+    user: req.user.id,
+    time: new Date(),
+    type: logTypes.addPlan,
+    reference: {
+      collectionName: 'plans',
+      _id: plan._id,
+    },
   });
+  res.send(plan);
 }

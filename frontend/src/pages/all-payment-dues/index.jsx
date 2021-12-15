@@ -1,6 +1,6 @@
 import React from 'react'
 import Box from 'components/Box'
-import { TableWrapper } from '../student/studentStyle'
+import { TableWrapper } from 'styled';
 import BaseLayout from 'layouts/BaseLayout'
 import { useHttp, useQuery } from 'hooks'
 import moment from 'moment'

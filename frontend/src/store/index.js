@@ -7,6 +7,7 @@ import deposit from './reducer/depositReducer'
 import paymentList from './reducer/paymentLists'
 import authReducer from './reducer/authReducer'
 import theme from './reducer/themeReducer'
+import user from './reducer/userReducer'
 
 
 export default configureStore({
@@ -19,6 +20,7 @@ export default configureStore({
     paymentList,
     auth: authReducer,
     theme,
+    user,
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware({ serializableCheck: false })
 });

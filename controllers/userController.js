@@ -1,6 +1,63 @@
 const User = require('../models/User');
 const { generateToken, checkToken } = require('../utils/token')
+const fs = require('fs');
+const { uploadImageBase64 } = require('../utils/fs');
 
+exports.index = async (req, res, next) => {
+  try {
+    const match = { 
+      _id: { $ne: req.user.id },
+    };
+    const options = { 
+      page: req.query.page || 1, 
+      limit: process.env.LIMIT,
+    };
+    const users = await User.paginate(match, options);
+    res.send(users);
+  } catch(err) {
+    next(err);
+  }
+}
+
+exports.get = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.params.userId);
+    res.send(user);
+  }
+  catch(err) {
+    next(err);
+  }
+}
+
+exports.deleteUser = async (req, res, next) => {
+  try {
+    const user = await User.findByIdAndDelete(req.params.userId);
+    if (user) {
+      res.send({ success: true });
+    }
+    
+  }
+  catch(err) {
+    next(err);
+  }
+}
+
+exports.update = async (req, res, next) => {
+  try {
+    const payload = { ...req.body };
+    if (req.body.photoBase64) {
+      payload['photo'] = uploadImageBase64(req.body.photoBase64, 'users');
+    }
+    delete payload.photoBase64;
+    let user = await User.findByIdAndUpdate(req.params.userId, payload);
+    user = await User.findById(req.params.userId);
+    res.send({ user, success: true });
+  }
+  catch(err) {
+    next(err);
+  }
+}
+ 
 exports.login = async (req, res, next) => {
   try {
     let user = await User.findOne({ email: req.body.email });
@@ -22,16 +79,21 @@ exports.login = async (req, res, next) => {
 }
 
 exports.register = async (req, res, next) => {
-  const { email, password, name } = req.body;
   try {
-    let user = await User.findOne({ email });
+    let user = await User.findOne({ email: req.body.email });
     if (user) {
       res.send({ message: "User's already exists.", success: false })
       return;
     }
-    user = await User.create({ name, email, password });
+    const name = `${req.body.first_name} ${req.body.last_name}`;
+    const payload = { ...req.body, name };
+    if (req.body.photo) {
+      payload['photo'] = uploadImageBase64(req.body.photo, 'users');
+    }
+    user = await User.create(payload);
+    delete user.password;
     if (user) {
-      res.send({ success: true })
+      res.send({ success: true, user });
     }
   }
   catch(err) {

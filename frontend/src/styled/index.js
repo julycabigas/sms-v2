@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 export const PaginationWrapper = styled.div`
-  background: var(var(--box-bg));
+  background: var(--box-bg);
   padding: 10px 0;
   margin-top: 30px;
   display: flex;
@@ -26,5 +26,21 @@ export const PaginationWrapper = styled.div`
         color: var(--link-color-nav);
       }
     }
+  }
+`;
+
+export const TableWrapper = styled.div`
+  border-radius: 3px;
+  tbody tr:first-child th {
+    border-top: none !important;
+  }
+  th, td {
+    vertical-align: middle;
+  }
+  tr:hover td {
+    background: var(--table-hover-bg);
+  }
+  td:not(:last-child) {
+    cursor: pointer;
   }
 `;

@@ -8,7 +8,6 @@ const db = mongoose.connection;
 require('dotenv').config();
 
 const indexRouter = require('./routes/index');
-const usersRouter = require('./routes/users');
 
 const app = express();
 
@@ -26,8 +25,8 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
 app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use( express.json({ limit: '50mb' }) );
+app.use( express.urlencoded({ limit: "50mb", extended: true, parameterLimit:50000 }) );
 app.use(cookieParser('secret-shhhhhhhh'));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'frontend/build')));
@@ -36,7 +35,7 @@ app.use(express.static(path.join(__dirname, 'frontend/build')));
 app.use('/', indexRouter);
 app.use('/storage', express.static(path.join(__dirname, '/storage')));
 app.post('/token', require('./controllers/userController').authToken);
-app.use('/api/user', usersRouter);
+app.use('/api/user', require('./routes/users'));
 app.use('/api/plan', require('./routes/planRouter'));
 app.use('/api/student', require('./routes/studentRouter'));
 app.get('/*', (req, res) => {
