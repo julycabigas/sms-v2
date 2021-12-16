@@ -9,10 +9,10 @@ export const ImageProfile = styled.img`
 
 export const ProfileInner = styled.div`
   background: var(--box-bg);
-  top: 43px;
+  top: 45px;
   right: 0;
   border-radius: 4px;
-  width: 255px;
+  min-width: 225px;
   position: absolute;
   box-shadow: -1px 0px 20px #00000026;
 `;

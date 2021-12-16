@@ -12,7 +12,7 @@ export const Index = ({ access_token }) => {
   const [disabledSubmit, setDisabledSubmit] = React.useState(false)
   const [errorMessage, setErrorMessage] = React.useState(null)
 
-  const handleLogin = React.useCallback(async (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault()
     setDisabledSubmit(true)
     const formData = new FormData(e.target)
@@ -23,8 +23,15 @@ export const Index = ({ access_token }) => {
     try {
       const { data } = await axios.post('/api/user/login', payload)
       if (data.success === true) {
+        const user = data.user;
+        delete user.password;
         setTimeout(() => {
-          dispatch( getAccessToken({ access_token: data.access_token }) )
+          dispatch( 
+            getAccessToken({ 
+              access_token: data.access_token,
+              user, 
+            }) 
+          )
           history.push('/student')
           setDisabledSubmit(false)
         }, 500)
@@ -37,7 +44,7 @@ export const Index = ({ access_token }) => {
       setDisabledSubmit(false)
       setErrorMessage("Error: " + err.message)
     }
-  }, [dispatch, history])
+  };
 
   if (access_token) {
     return <Redirect to="/student" />

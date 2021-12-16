@@ -7,6 +7,7 @@ exports.index = async (req, res, next) => {
   try {
     const match = { 
       _id: { $ne: req.user.id },
+      email: { $ne: 'contact@ecomwarrioracademy.com' },
     };
     const options = { 
       page: req.query.page || 1, 
@@ -68,7 +69,7 @@ exports.login = async (req, res, next) => {
         signed: true,
         path: '/token',
       });
-      res.send(access_token);
+      res.send({ access_token, user, success: true });
     } else {
       res.send({ message: "Email or Password is incorrect!", success: false })
     }
@@ -109,11 +110,12 @@ exports.authLogout = (req, res) => {
 exports.authToken = (req, res, next) => {
   try {
     const { access_token } = req.signedCookies;
-    checkToken(access_token, (payload) => {
+    checkToken(access_token, async (payload) => {
       if (!payload) {
         res.send(null);
       } else {
-        res.send(payload);
+        const user = await User.findById(payload.id);
+        res.send({ access_token, user });
       }
     });
   }

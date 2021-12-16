@@ -25,3 +25,11 @@ export function useHttp() {
   http.defaults.headers.common['Authorization'] = `Bearer ${access_token}`;
   return http;
 }
+
+export function useAuth() {
+  const { access_token, user } = useSelector(state => state.auth);
+  return {
+    user,
+    access_token
+  }
+}

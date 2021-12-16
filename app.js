@@ -8,7 +8,6 @@ const db = mongoose.connection;
 require('dotenv').config();
 
 const indexRouter = require('./routes/index');
-const { protect } = require('./middleware/auth')
 
 const app = express();
 
@@ -35,7 +34,7 @@ app.use(express.static(path.join(__dirname, 'react/build')));
 // routes
 app.use('/', indexRouter);
 app.use('/storage', express.static(path.join(__dirname, '/storage')));
-app.post('/token', protect, require('./controllers/userController').authToken);
+app.post('/token', require('./controllers/userController').authToken);
 app.use('/api/user', require('./routes/users'));
 app.use('/api/plan', require('./routes/planRouter'));
 app.use('/api/student', require('./routes/studentRouter'));

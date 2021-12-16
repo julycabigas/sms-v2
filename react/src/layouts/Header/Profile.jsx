@@ -1,9 +1,13 @@
 import React from 'react';
 import { ImageProfile, ProfileInner, ProfileLinkWrapper } from './header.style';
 import axios from 'axios'
+import noProfile from 'images/no-profile.png';
+import { useAuth } from 'hooks';
 
 const Profile = () => {
   const [open, setOpen] = React.useState(false);
+  const { user } = useAuth();
+  const profileInnerRef = React.useRef(null);
 
   const handleLogout = async () => {
     try {
@@ -19,24 +23,39 @@ const Profile = () => {
     }
   }
 
+  React.useEffect(() => {
+    const windowClick = (e) => {
+      if (!open) return;
+      if ((profileInnerRef && profileInnerRef.current) && !(e.target === profileInnerRef.current || profileInnerRef.current.contains(e.target))) {
+        setOpen(false);
+      }
+    }
+    window.addEventListener('click', windowClick);
+    return () => {
+      window.removeEventListener('click', windowClick);
+    }
+  }, [open]);
+
   return (
     <div className="position-relative" style={{ zIndex: 2 }}>
       <div onClick={() => setOpen(!open)}>
         <ImageProfile
-          src="https://lh3.googleusercontent.com/ogw/ADea4I6ekOayklfSxkWogyQZhIzjs04ED04qMY1CpC6CDQ=s32-c-mo"
+          src={user && (user.photo || noProfile)}
           size="40px"
         />
       </div>
       {open && (
-        <ProfileInner>
-          <div className="p-2 d-flex" style={{ borderBottom: '1px solid var(--border-color)' }}>
+        <ProfileInner ref={profileInnerRef}>
+          <div className="p-2 d-flex flex-column align-items-center" style={{ borderBottom: '1px solid var(--border-color)' }}>
             <ImageProfile
-              src="https://lh3.googleusercontent.com/ogw/ADea4I6ekOayklfSxkWogyQZhIzjs04ED04qMY1CpC6CDQ=s32-c-mo"
+              src={user && (user.photo || noProfile)}
               size="50px"
             />
-            <div className="ml-2 d-flex flex-column">
-              <span className="font-weight-500">Joemy Jay Flores</span>
-              <span className="small">jayflores139@gmail.com</span>
+            <div className="mt-2 d-flex flex-column align-items-center">
+              <span className="font-weight-500">
+                {user && user.name}
+              </span>
+              <span className="small">{user && user.email}</span>
             </div>
           </div>
           <ProfileLinkWrapper className="d-flex flex-column py-2">
