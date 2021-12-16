@@ -55,7 +55,7 @@ export const TotalPaid = ({ studentId }) => {
             </div>
             <div className="lower--paid-box">
               <span className="total-name">Deposit</span>
-              <Link to="/deposits" className="btn btn-light d-flex align-items-center justify-content-between">
+              <Link to="/deposits" className="btn btn-light btn-sm d-flex align-items-center justify-content-between">
                 <span className="mr-2">View</span>
                 <BsArrowRight />
               </Link>
@@ -70,7 +70,7 @@ export const TotalPaid = ({ studentId }) => {
             </div>
             <div className="lower--paid-box">
               <span className="total-name">Payment List</span>
-              <Link to="/payment-lists" className="btn btn-light d-flex align-items-center justify-content-between">
+              <Link to="/payment-lists" className="btn btn-light btn-sm d-flex align-items-center justify-content-between">
                 <span className="mr-2">View</span>
                 <BsArrowRight />
               </Link>

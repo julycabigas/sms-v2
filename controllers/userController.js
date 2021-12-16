@@ -57,18 +57,18 @@ exports.update = async (req, res, next) => {
     next(err);
   }
 }
- 
+ ``
 exports.login = async (req, res, next) => {
   try {
     let user = await User.findOne({ email: req.body.email });
     if( user && user.matchPassword(req.body.password)) {
-      const access_token = generateToken({ id: user.id });
+      const access_token = generateToken({ id: user._id });
       res.cookie('access_token', access_token, {
         httpOnly: true, 
         signed: true,
         path: '/token',
       });
-      res.send({ access_token, success: true })
+      res.send(access_token);
     } else {
       res.send({ message: "Email or Password is incorrect!", success: false })
     }
@@ -109,11 +109,11 @@ exports.authLogout = (req, res) => {
 exports.authToken = (req, res, next) => {
   try {
     const { access_token } = req.signedCookies;
-    checkToken(access_token, (isValid) => {
-      if (!isValid) {
-        res.send(isValid);
+    checkToken(access_token, (payload) => {
+      if (!payload) {
+        res.send(null);
       } else {
-        res.send(isValid);
+        res.send(payload);
       }
     });
   }

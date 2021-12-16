@@ -2,9 +2,10 @@ import axios from 'axios'
 
 export function onAuthStateChanged(cb) {
   axios.post('/token')
-    .then(res => {
+    .then(({ data }) => {
       cb({
-        access_token: res.data,
+        access_token: data.token,
+        user: data.user,
         isAuthenticated: true,
       })
     })

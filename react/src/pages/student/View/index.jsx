@@ -4,16 +4,17 @@ import { useParams, Switch, HashRouter, Route, NavLink, Redirect } from 'react-r
 import styled from 'styled-components'
 import Box from 'components/Box'
 import * as style from './index.style'
-import Home from './Home'
-import Deposit from './Deposit'
-import Edit from './Edit'
 import { useHttp } from 'hooks'
 import { getDetails } from 'store/reducer/studentDetails'
 import { allDeposit } from 'store/reducer/depositReducer'
-import PaymentLists from './PaymentLists'
-import TotalPaid from './TotalPaid'
 import { BsDownload } from 'react-icons/bs';
 import { GoFilePdf } from 'react-icons/go';
+
+const Deposit = React.lazy(() => import('./Deposit'));
+const PaymentLists = React.lazy(() => import('./PaymentLists'));
+const Edit = React.lazy(() => import('./Edit'));
+const Home = React.lazy(() => import('./Home'));
+const TotalPaid = React.lazy(() => import('./TotalPaid'));
 
 export const Index = ({ match }) => {
   const { studentId } = useParams()
@@ -88,14 +89,16 @@ export const Index = ({ match }) => {
               </style.LinkWrapper>
             </div>
             <div className="col-md-10" style={{ minHeight: '400px' }}>
-              <Switch>
-                <Route path={`/payment-lists`} component={PaymentLists} />
-                <Route path={`/deposits`} component={Deposit} />
-                <Route exact path={`/edit`} component={Edit} />
-                <Route exact path={`/total-paid`} render={props => <TotalPaid {...props} studentId={studentId} />} />
-                <Route exact path={`/home`} component={Home} />
-                <Redirect from="/" to="/home" />
-              </Switch>
+              <React.Suspense fallback={<p></p>}>
+                <Switch>
+                  <Route path={`/payment-lists`} component={PaymentLists} />
+                  <Route path={`/deposits`} component={Deposit} />
+                  <Route exact path={`/edit`} component={Edit} />
+                  <Route exact path={`/total-paid`} render={props => <TotalPaid {...props} studentId={studentId} />} />
+                  <Route exact path={`/home`} component={Home} />
+                  <Redirect from="/" to="/home" />
+                </Switch>
+              </React.Suspense>
             </div>
           </div>
         </HashRouter>

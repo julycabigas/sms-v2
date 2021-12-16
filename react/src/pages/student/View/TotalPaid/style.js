@@ -4,8 +4,8 @@ export const PaidBox = styled.div`
   background-color: var(--box-bg);
   max-width: 335px;
   padding: 20px;
-  box-shadow: 0px 0px 40px #00000012;
-  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 7px;
   display: flex;
   flex-direction: column;
   height: 172px;

@@ -83,7 +83,7 @@ export const AllDetails = ({ student_details, payment_details }) => {
         </Row>
 
         <div className="text-right">
-          <Button type="button" variant="default" className="mr-2" onClick={() => dispatch(emptyDetails())}>
+          <Button type="button" variant="light" className="mr-2" onClick={() => dispatch(emptyDetails())}>
             Cancel
           </Button>
           <Button type="submit" variant="primary" disabled={disabledSubmit}>
