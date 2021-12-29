@@ -8,7 +8,6 @@ import { useQuery } from 'hooks'
 import { PaginationWrapper } from 'styled'
 import Box from 'components/Box';
 import { useHttp } from 'hooks'
-import BaseLayout from 'layouts/BaseLayout'
 import MoreOption from 'components/MoreOption';
 import Create from './Create';
 import { FaPlus } from 'react-icons/fa';
@@ -70,7 +69,7 @@ export const Index = ({ plan, isFetching }) => {
           modalShow={openCreateModal} 
         />
       )}
-      <BaseLayout>
+      <>
         <Box 
           hasBackBtn={false} 
           title="Plans" 
@@ -105,7 +104,7 @@ export const Index = ({ plan, isFetching }) => {
           </TableWrapperStyle>
         </Box>
         <Links plan={plan} location={location} />
-      </BaseLayout>
+      </>
     </>
   );
 }

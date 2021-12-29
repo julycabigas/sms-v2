@@ -126,7 +126,7 @@ function Edit({ userId, modalShow, onModalClose }) {
   );
 }
 
-const UserProfileChooser = React.memo(({ onPhotoChange, file, onRemoveFile, userPhoto }) => {
+export const UserProfileChooser = React.memo(({ onPhotoChange, file, onRemoveFile, userPhoto }) => {
   const image = () => {
     if (file) {
       return URL.createObjectURL(file);

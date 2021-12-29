@@ -4,9 +4,9 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "dev": "concurrently \"nodemon ./bin/www\" \"cd frontend && yarn start\"",
-    "build": "cd frontend && yarn install && yarn build",
-    "install-all": "yarn install && cd frontend && yarn install",
+    "dev": "concurrently \"nodemon ./bin/www\" \"cd react && yarn start\"",
+    "build": "cd react && yarn install && yarn build",
+    "install-all": "yarn install && cd react && yarn install",
     "serve": "nodemon ./bin/www"
   },
   "dependencies": {

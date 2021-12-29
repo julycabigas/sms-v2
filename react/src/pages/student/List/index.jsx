@@ -77,20 +77,26 @@ export const Index = ({ match, student, studentData, totalDocs }) => {
 
   return (
     <>
-      <SearchBar />
       <Box 
         title={(
-          <button 
-            className="btn btn-light" 
-            type="button"
-            disabled={downloading || selectedDocs.length === 0}
-            onClick={onDownloadStudent}
-          ><BsDownload /> {downloading ? 'Downloading...' : 'Download'}</button>
+          <div className="d-flex align-items-center">
+            <SearchBar />
+            <button 
+              className="ml-2 btn btn-light" 
+              type="button"
+              disabled={downloading || selectedDocs.length === 0}
+              onClick={onDownloadStudent}
+            >
+              <BsDownload /> {downloading ? 'Downloading...' : 'Download'}
+            </button>
+          </div>
         )} 
         hasBackBtn={false}
         maxWidth="100%"
         rightHeader={(
-          <Link className="btn btn-primary" to={`${match.url}/create/1`}>Create Student</Link>
+          <Link className="btn btn-primary" to={`${match.url}/create/1`}>
+            Create Student
+          </Link>
         )}
       >
         <div className="py-3">

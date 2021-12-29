@@ -30,6 +30,7 @@ export const ProfileLinkWrapper = styled.div`
     text-align: left;
     background: transparent;
     border: 0;
+    color: var(--link-color-nav);
   }
   button:hover {
     background: var(--link-hover-bg);
