@@ -3,6 +3,7 @@ import { ImageProfile, ProfileInner, ProfileLinkWrapper } from './header.style';
 import axios from 'axios'
 import noProfile from 'images/no-profile.png';
 import { useAuth } from 'hooks';
+import { Link } from 'react-router-dom';
 
 const Profile = () => {
   const [open, setOpen] = React.useState(false);
@@ -59,7 +60,7 @@ const Profile = () => {
             </div>
           </div>
           <ProfileLinkWrapper className="d-flex flex-column py-2">
-            <a>Profile</a>
+            <Link to="/profile">Profile</Link>
             <button type="button" onClick={handleLogout}>Logout</button>
           </ProfileLinkWrapper>
         </ProfileInner>

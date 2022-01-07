@@ -90,7 +90,7 @@ function SearchBar({ allPlans }) {
   return (
     <SearchWrapper onSubmit={handleSubmit}>
       <div className="d-flex align-items-center">
-        <button type="button" onClick={handleShowForm} className="btn filter-input" style={{ fontWeight: '600' }}>
+        <button type="button" onClick={handleShowForm} className="btn btn-light" style={{ fontWeight: '600' }}>
           <FaFilter /> <span className="ml-2">Filter</span>
         </button>
         <div className="d-flex align-items-center">

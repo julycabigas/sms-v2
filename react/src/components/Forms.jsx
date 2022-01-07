@@ -5,6 +5,8 @@ import { DatePicker as AntDatePicker } from "antd"
 const Label = styled.label`
   font-weight: 600;
   margin-bottom: 3px;
+  width: ${props => props.labelWidth};
+  margin: ${props => props.labelMargin};
 `;
 
 const DatePickerWrapper = styled.div`
@@ -15,9 +17,17 @@ const DatePickerWrapper = styled.div`
   }
 `;
 
-export const Input = React.forwardRef(({label,id, className, onChange, value, ...rest}, ref) => (
-  <>
-    {label && <Label htmlFor={id}>{label}</Label>}
+export const Input = React.forwardRef(({label, labelWidth, labelMargin, horizontal, id, className, onChange, value, ...rest}, ref) => (
+  <div className={horizontal ? 'd-flex align-items-center' : ''}>
+    {label && (
+      <Label 
+        htmlFor={id} 
+        labelWidth={labelWidth}
+        labelMargin={labelMargin}
+      >
+        {label}
+      </Label>
+    )}
     <input 
       className={`form-control ${className || ''}`} 
       onChange={onChange} 
@@ -25,7 +35,7 @@ export const Input = React.forwardRef(({label,id, className, onChange, value, ..
       ref={ref} 
       {...rest}
     />
-  </>
+  </div>
 ))
 
 export const DatePicker = React.forwardRef(({label,id, className, onChange, value, ...rest}, ref) => (

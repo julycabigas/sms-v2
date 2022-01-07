@@ -31,6 +31,18 @@ export const BoxHeader = styled.div`
   }
 `
 
+export const BoxFooter = styled.div`
+  display: flex;
+  align-items: center;
+  padding: 13px 15px;
+  border-top: 1px solid var(--border-color);
+  justify-content: space-between;
+  & > div {
+    display: flex;
+    align-items: center;
+  }
+`
+
 export const BoxBody = styled.div`
   padding: 0 15px;
 `

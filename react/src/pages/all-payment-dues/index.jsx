@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react'
 import Box from 'components/Box'
 import { TableWrapper } from 'styled';
-import BaseLayout from 'layouts/BaseLayout'
 import { useHttp, useQuery } from 'hooks'
 import moment from 'moment'
 import { Link, useHistory } from 'react-router-dom'
@@ -96,42 +95,40 @@ const Wrapper = ({ children }) => {
   }
 
   return (
-    <BaseLayout>
-      <Box 
-        title={<>
-            All Payment Dues
-            {duesQuery() ? (
-              <div style={{ fontSize: '0.65em', fontWeight: '400' }}>
-                All payment dues from <strong>{moment(duesQuery().from).format('MMM DD, YYYY')}</strong> to <strong>{moment(duesQuery().to).format('MMM DD, YYYY')}</strong>
-              </div>
-            ) : (
-              <div style={{ fontSize: '0.65em', fontWeight: '400' }}>
-                All payment dues that is within 7 days will show up here
-              </div>
-            )}
-          </>} 
-        hasBackBtn={false}
-        maxWidth="100%"
-        rightHeader={''}
-      >
-        <div className="py-3">
-          <TableWrapper className="table-responsive">
-            <table className="table mb-0">
-              <tbody>
-                <tr>
-                  <th>Name</th>
-                  <th>Payment Plan</th>
-                  <th>Due Date</th>
-                  <th>Amount</th>
-                  <th>Status</th>
-                  <th>Action</th>
-                </tr>
-                {children}
-              </tbody>
-            </table>
-          </TableWrapper>
-        </div>
-    </Box>
-  </BaseLayout>
+    <Box 
+      title={<>
+          All Payment Dues
+          {duesQuery() ? (
+            <div style={{ fontSize: '0.65em', fontWeight: '400' }}>
+              All payment dues from <strong>{moment(duesQuery().from).format('MMM DD, YYYY')}</strong> to <strong>{moment(duesQuery().to).format('MMM DD, YYYY')}</strong>
+            </div>
+          ) : (
+            <div style={{ fontSize: '0.65em', fontWeight: '400' }}>
+              All payment dues that is within 7 days will show up here
+            </div>
+          )}
+        </>} 
+      hasBackBtn={false}
+      maxWidth="100%"
+      rightHeader={''}
+    >
+      <div className="py-3">
+        <TableWrapper className="table-responsive">
+          <table className="table mb-0">
+            <tbody>
+              <tr>
+                <th>Name</th>
+                <th>Payment Plan</th>
+                <th>Due Date</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+              {children}
+            </tbody>
+          </table>
+        </TableWrapper>
+      </div>
+  </Box>
   )
 }
