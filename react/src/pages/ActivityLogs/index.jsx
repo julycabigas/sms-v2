@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import Box from 'components/Box'
 import { TableWrapper, PaginationWrapper } from 'styled';
-import { useHttp, useQuery } from 'hooks';
+import { useAuth, useHttp, useQuery } from 'hooks';
 import Pagination from 'components/Pagination'
+import moment from 'moment'
 
 const ActivityLogs = () => {
   const [logData, setLogData] = useState(null);
   const http = useHttp();
   const query = useQuery();
+  const { user } = useAuth();
 
   const queries = query.toString();
 
@@ -38,8 +40,10 @@ const ActivityLogs = () => {
               </tr>
               {logData && logData.docs && logData.docs.map((doc, key) => (
                 <tr key={key}>
-                  <td>{doc.time}</td>
-                  <td></td>
+                  <td>{doc.time && moment(doc.time).format('MMM DD, YYYY hh:mm:ss A')}</td>
+                  <td>
+                    {user && user._id === doc.user._id ? 'You' : doc.user.name }
+                  </td>
                   <td>{doc.type && doc.type.type}</td>
                   <td>{doc.type && doc.type.message}</td>
                   <td>{doc.reference && doc.reference.collectionName}</td>

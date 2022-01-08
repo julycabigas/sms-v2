@@ -9,6 +9,8 @@ import { getDetails } from 'store/reducer/studentDetails'
 import { allDeposit } from 'store/reducer/depositReducer'
 import { BsDownload } from 'react-icons/bs';
 import { GoFilePdf } from 'react-icons/go';
+import ActivityLogByRef from 'components/ActivityLogByRef';
+
 
 const Deposit = React.lazy(() => import('./Deposit'));
 const PaymentLists = React.lazy(() => import('./PaymentLists'));
@@ -102,6 +104,9 @@ export const Index = ({ match }) => {
             </div>
           </div>
         </HashRouter>
+        <div className="border-top p-3">
+          <ActivityLogByRef refId={studentId} />
+        </div>
       </Box>
     </MainWrapper>
   )

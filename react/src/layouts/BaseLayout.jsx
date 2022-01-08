@@ -1,7 +1,14 @@
 import React from 'react';
 import Header from './Header';
+import { useSelector } from 'react-redux'
 
 function BaseLayout({ children }) {
+  const { access_token } = useSelector(state => state.auth)
+
+  if (!access_token) {
+    return <>{children}</>
+  }
+
   return (
     <div className="container-fluid p-0">
       <Header />

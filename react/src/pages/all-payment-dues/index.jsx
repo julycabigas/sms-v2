@@ -1,9 +1,10 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import Box from 'components/Box'
 import { TableWrapper } from 'styled';
 import { useHttp, useQuery } from 'hooks'
 import moment from 'moment'
 import { Link, useHistory } from 'react-router-dom'
+import { DatePicker } from 'components/Forms'
 
 export const Index = () => {
   const http = useHttp()
@@ -87,11 +88,26 @@ const List = ({ doc }) => {
 
 const Wrapper = ({ children }) => {
   const query = useQuery();
+  const [dueFromDate, setDueFromDate] = useState(null);
+  const [dueToDate, setDueToDate] = useState(null);
+  const history = useHistory();
 
   const duesQuery = () => {
     if (!query.get('dues')) return;
     const [from, to] = query.get('dues').split('~');
     return { from, to };
+  }
+
+  const onFilter = () => {
+    query.set('dues', `${dueFromDate}~${dueToDate}`);
+    history.push('?' + query.toString());
+  }
+
+  const disabledBtn = () => {
+    if (!dueFromDate || !dueToDate) {
+      return true;
+    }
+    return moment(dueFromDate).isSameOrAfter(dueToDate, 'day');
   }
 
   return (
@@ -110,7 +126,24 @@ const Wrapper = ({ children }) => {
         </>} 
       hasBackBtn={false}
       maxWidth="100%"
-      rightHeader={''}
+      rightHeader={(
+        <div className="d-flex">
+          <span className="mr-2">
+            <DatePicker placeholder="From" className="form-control" 
+              onChange={(date, dateString) => setDueFromDate(dateString)}
+            />
+          </span>
+          <span className="mr-2">
+            <DatePicker placeholder="To" className="form-control" 
+              onChange={(date, dateString) => setDueToDate(dateString)}
+            />
+          </span>
+          <button type="button" className="btn btn-primary btn-sm"
+            onClick={onFilter}
+            disabled={disabledBtn()}
+          >Filter</button>
+        </div>
+      )}
     >
       <div className="py-3">
         <TableWrapper className="table-responsive">

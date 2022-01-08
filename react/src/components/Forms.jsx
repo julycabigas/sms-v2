@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { DatePicker as AntDatePicker } from "antd"
 
 const Label = styled.label`
+  font-size: 16px;
   font-weight: 600;
   margin-bottom: 3px;
   width: ${props => props.labelWidth};
