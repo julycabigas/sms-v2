@@ -13,6 +13,7 @@ const Users = React.lazy(() => import('pages/Users'));
 const AllPaymentDues = React.lazy(() => import('pages/all-payment-dues'));
 const Login = React.lazy(() => import('pages/login'));
 const Profile = React.lazy(() => import('pages/Profile'));
+const ActivityLogs = React.lazy(() => import('pages/ActivityLogs'));
 
 const [html] = document.getElementsByTagName('html')
 
@@ -38,6 +39,7 @@ function App() {
               <PrivateRoute path="/all-payment-dues" component={AllPaymentDues} />
               <PrivateRoute path="/users" component={Users} />
               <PrivateRoute path="/profile" component={Profile} />
+              <PrivateRoute path="/activity-logs" component={ActivityLogs} />
             </Suspense>
             </BaseLayout>
             <Route path="/login" component={Login} />

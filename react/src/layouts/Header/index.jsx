@@ -19,6 +19,7 @@ export const Header = ({ isDark }) => {
           <NavLink to="/all-payment-dues">All Payment Dues</NavLink>
           <NavLink to="/plan">Plans</NavLink>
           <NavLink to="/users">Users</NavLink>
+          <NavLink to="/activity-logs">Activity Logs</NavLink>
         </div>
         <div>
 

@@ -10,8 +10,7 @@ exports.protect = async (req, res, next) => {
       req.user = await User.findById(decoded.id).select('-password')
       next()
     } else {
-      res.status(401)
-      next({ message:  '401 Unauthorized' })
+      res.sendStatus(401)
     }
   })
 }
