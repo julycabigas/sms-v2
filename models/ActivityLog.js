@@ -19,6 +19,10 @@ const activityLogSchema = new Schema({
     type: Schema.Types.ObjectId, 
     ref: 'User' 
   },
+  updates: {
+    type: Array,
+    default: null,
+  }
 }, { timestamps: true })
 
 activityLogSchema.plugin(paginate);

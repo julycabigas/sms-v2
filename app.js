@@ -39,6 +39,7 @@ app.use('/api/user', require('./routes/users'));
 app.use('/api/plan', require('./routes/planRouter'));
 app.use('/api/student', require('./routes/studentRouter'));
 app.use('/api/logs', require('./routes/activityRouter'));
+app.use('/api/notes', require('./routes/noteRouter'));
 app.get('/*', (req, res) => {
   res.sendFile(path.join(__dirname, 'react/build', 'index.html'));
 });

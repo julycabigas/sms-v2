@@ -3,6 +3,7 @@ import Box from 'components/Box';
 import { Input } from 'components/Forms';
 import { UserProfileChooser } from 'pages/Users/Edit';
 import ChangePassword from './ChangePassword';
+import { useAuth } from 'hooks';
 
 const Profile = () => {
   const [edit, setEdit] = useState(false);
@@ -34,6 +35,7 @@ const Profile = () => {
     for (const [key, value] of formData.entries()) {
       payload[key] = value;
     }
+    console.log({  payload })
   };
 
   return (
@@ -96,6 +98,20 @@ const Profile = () => {
 
 const AuthInfo = ({ onSubmit, onCancel, edit }) => {
   const firstName = useRef(null);
+  const { user } = useAuth();
+  const userData = { ...user };
+  const [first_name, setFirstName] = useState(userData.first_name || '');
+  const [last_name, setLastName] = useState(userData.last_name || '');
+  const [email, setEmail] = useState(userData.email || '');
+  const [contact_number, setContactNumber] = useState(userData.contact_number || '');
+
+  const _onCancel = () => {
+    onCancel();
+    setFirstName(userData.first_name || '');
+    setLastName(userData.last_name || '');
+    setEmail(userData.email || '');
+    setContactNumber(userData.contact_number || '');
+  }
 
   useEffect(() => {
     if (edit && firstName && firstName.current) {
@@ -116,6 +132,8 @@ const AuthInfo = ({ onSubmit, onCancel, edit }) => {
             name="first_name"
             readOnly={!edit}
             ref={firstName}
+            value={first_name}
+            onChange={e => setFirstName(e.target.value)}
           />
         </div>
         <div className="mb-4">
@@ -127,6 +145,8 @@ const AuthInfo = ({ onSubmit, onCancel, edit }) => {
             labelMargin="0"
             name="last_name"
             readOnly={!edit}
+            value={last_name}
+            onChange={e => setLastName(e.target.value)}
           />
         </div>
         <div className="mb-4">
@@ -139,6 +159,8 @@ const AuthInfo = ({ onSubmit, onCancel, edit }) => {
             type="email"
             name="email"
             readOnly={!edit}
+            value={email}
+            onChange={e => setEmail(e.target.value)}
           />
         </div>
         <div className="mb-4">
@@ -151,6 +173,8 @@ const AuthInfo = ({ onSubmit, onCancel, edit }) => {
             type="tel"
             name="contact_number"
             readOnly={!edit}
+            value={contact_number}
+            onChange={e => setContactNumber(e.target.value)}
           />
         </div>
       </div>
@@ -161,7 +185,7 @@ const AuthInfo = ({ onSubmit, onCancel, edit }) => {
             <button 
               type="button" 
               className="btn btn-light mr-2" 
-              onClick={onCancel}
+              onClick={_onCancel}
             >
               Cancel
             </button>

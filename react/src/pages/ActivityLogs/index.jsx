@@ -13,6 +13,18 @@ const ActivityLogs = () => {
 
   const queries = query.toString();
 
+  const dateOrText = (text) => {
+    const d = moment(text);
+    if (d.isValid()) {
+      return moment(text).format('YYYY-MM-DD');
+    }
+    return text;
+  }
+
+  const itemKey = (key) => {
+    return key.split('_').join(' ');
+  }
+
   useEffect(() => {
     (async () => {
       const { data }  = await http.get('/api/logs?' + queries);
@@ -34,19 +46,25 @@ const ActivityLogs = () => {
               <tr>
                 <th>Time</th>
                 <th>User</th>
-                <th>Type</th>
-                <th>Message</th>
+                <th>Activity</th>
                 <th>Ref</th>
               </tr>
               {logData && logData.docs && logData.docs.map((doc, key) => (
                 <tr key={key}>
-                  <td>{doc.time && moment(doc.time).format('MMM DD, YYYY hh:mm:ss A')}</td>
-                  <td>
+                  <td style={{ verticalAlign: 'top' }}>{doc.time && moment(doc.time).format('MMM DD, YYYY hh:mm:ss A')}</td>
+                  <td style={{ verticalAlign: 'top' }}>
                     {user && user._id === doc.user._id ? 'You' : doc.user.name }
                   </td>
-                  <td>{doc.type && doc.type.type}</td>
-                  <td>{doc.type && doc.type.message}</td>
-                  <td>{doc.reference && doc.reference.collectionName}</td>
+                  <td>
+                    <ul className="pl-3 mb-0">
+                    {doc.updates.length ? doc.updates.map((item, key) => (
+                      <li key={key}>{item.type || ''} <span style={{ textDecoration: 'underline' }}>{itemKey(item.key)}</span> from {dateOrText(item.from)} to {dateOrText(item.to)}.</li>
+                    )) : (
+                      <li>{doc.type && doc.type.message}</li>
+                    )}
+                    </ul>
+                  </td>
+                  <td style={{ verticalAlign: 'top' }}>{doc.reference && doc.reference.collectionName}</td>
                 </tr>
               ))}
               {!logData && (
@@ -59,22 +77,15 @@ const ActivityLogs = () => {
         </TableWrapper>
         </div> 
       </Box>
-      <Links logData={logData} />
+      {logData && (
+        <PaginationWrapper className="mb-3">
+          <Pagination 
+            totalPages={logData.totalPages}
+            current={logData.page}
+          />
+        </PaginationWrapper>
+      )}
     </>
   );
 }
-
-const Links = ({ logData }) => (
-  <>
-    {logData && logData.totalDocs > logData.limit && (
-      <PaginationWrapper className="mb-3">
-        <Pagination 
-          totalPages={logData && logData.totalPages}
-          current={logData && logData.page}
-        />
-      </PaginationWrapper>
-    )}
-  </>
-)
-
 export default ActivityLogs;

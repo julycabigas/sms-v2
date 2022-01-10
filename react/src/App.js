@@ -34,16 +34,18 @@ function App() {
           <Switch>
             <Suspense fallback={<p></p>}>
               <BaseLayout>
-                <PrivateRoute path="/plan" component={Plan} />
-                <PrivateRoute path="/student" component={Student} />
-                <PrivateRoute path="/all-payment-dues" component={AllPaymentDues} />
-                <PrivateRoute path="/users" component={Users} />
-                <PrivateRoute path="/profile" component={Profile} />
-                <PrivateRoute path="/activity-logs" component={ActivityLogs} />
-                <Route path="/login" component={Login} />
+                <Switch>
+                  <PrivateRoute path="/plan" component={Plan} />
+                  <PrivateRoute path="/student" component={Student} />
+                  <PrivateRoute path="/all-payment-dues" component={AllPaymentDues} />
+                  <PrivateRoute path="/users" component={Users} />
+                  <PrivateRoute path="/profile" component={Profile} />
+                  <PrivateRoute path="/activity-logs" component={ActivityLogs} />
+                  <Route path="/login" component={Login} />
+                  <Redirect from='/' to="/student" />
+                </Switch>
               </BaseLayout>
             </Suspense>
-            <Redirect from="/" to="/student" />
           </Switch>
       </BrowserRouter>
       <ToastContainer 

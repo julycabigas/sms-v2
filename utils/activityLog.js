@@ -64,11 +64,12 @@ exports.logTypes = {
 }
 
 exports.createLog = async (props) => {
-  const { time, type, message, reference, user } = props;
+  const { time, type, updates, reference, user } = props;
   return await ActivityLog.create({
     time,
     type,
     user,
+    updates: updates || [],
     reference: {
       collectionName: reference.collectionName,
       _id: reference._id,

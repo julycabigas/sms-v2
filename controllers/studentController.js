@@ -137,6 +137,24 @@ exports.update = async (req, res, next) => {
   try {
     const { studentId } = req.body;
     let student = await Student.findById(studentId);
+    const payloads = { ...req.body };
+    const logUpdates = [];
+    delete payloads.paymentLists;
+    delete payloads.studentId;
+    for (const [key, value] of Object.entries(payloads)) {
+      if (key === 'payment_date_start' || key === 'joined_date') {
+        payloads.payment_date_start = new Date(moment.utc(payloads.payment_date_start).toString());
+        payloads.joined_date = new Date(moment.utc(payloads.joined_date).toString());
+      }
+      if (payloads[key].toString() !== student[key].toString()) {
+        logUpdates.push({ 
+          key,  
+          type: 'Updated',
+          from: student[key],
+          to: payloads[key],
+        });
+      }
+    }
     const response = {}
     const studentData = { ...req.body };
     response.paymentLists = req.body.paymentLists && (
@@ -158,6 +176,7 @@ exports.update = async (req, res, next) => {
       user: req.user.id,
       time: new Date(),
       type: logTypes.updateStudent,
+      updates: logUpdates,
       reference: {
         collectionName: 'students',
         _id: student._id,
@@ -207,12 +226,30 @@ exports.getPaymentList = async (req, res, next) => {
 exports.updatePaymentList = async (req, res, next) => {
   try {
     const { paymentListId, studentId } = req.params
+    const logUpdates = [];
+    const payloads = { ...req.body };
+    delete payloads.amount;
     let paymentList = await PaymentList.findByIdAndUpdate(paymentListId, { ...req.body })
+    for (const [key] of Object.entries(payloads)) {
+      if (key === 'due_date' || key === 'date_paid') {
+        payloads.due_date = new Date(moment.utc(payloads.due_date).toString());
+        payloads.date_paid = new Date(moment.utc(payloads.date_paid).toString());
+      }
+      if (payloads[key].toString() !== paymentList[key].toString()) {
+          logUpdates.push({ 
+            key,  
+            type: 'Updated',
+            from: paymentList[key],
+            to: payloads[key],
+          })
+      }
+    }
     paymentList = await PaymentList.findById(paymentListId)
     await createLog({ 
       user: req.user.id,
       time: new Date(),
       type: logTypes.updatePaymentList,
+      updates: logUpdates,
       reference: {
         collectionName: 'paymentlists',
         _id: paymentList._id,
@@ -269,12 +306,28 @@ exports.updateDeposit = async (req, res, next) => {
   try {
     const { studentId } = req.params;
     const { amount, currency, date, _id: depositId } = req.body;
+    const payloads = { currency, date };
+    const logUpdates = [];
     let deposit = await Deposit.findByIdAndUpdate(depositId, { amount, currency, date, });
+    for (const [key] of Object.entries(payloads)) {
+      if (key === 'date') {
+        payloads.date = new Date(moment.utc(payloads.date).toString());
+      }
+      if (payloads[key].toString() !== deposit[key].toString()) {
+        logUpdates.push({ 
+          key,  
+          type: 'Updated',
+          from: deposit[key],
+          to: payloads[key],
+        });
+      }
+    }
     deposit = await Deposit.findById(depositId)
     await createLog({ 
       user: req.user.id,
       time: new Date(),
       type: logTypes.updateDeposit,
+      updates: logUpdates,
       reference: {
         collectionName: 'deposits',
         _id: deposit._id,

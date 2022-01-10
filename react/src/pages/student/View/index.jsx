@@ -17,6 +17,7 @@ const PaymentLists = React.lazy(() => import('./PaymentLists'));
 const Edit = React.lazy(() => import('./Edit'));
 const Home = React.lazy(() => import('./Home'));
 const TotalPaid = React.lazy(() => import('./TotalPaid'));
+const Notes = React.lazy(() => import('./Notes'));
 
 export const Index = ({ match }) => {
   const { studentId } = useParams()
@@ -66,6 +67,7 @@ export const Index = ({ match }) => {
       <Box 
         title="Details" 
         backPath="/student"
+        maxWidth="100%"
         rightHeader={(
           <>
             <button type="button" className="btn btn-light mr-2"
@@ -88,12 +90,14 @@ export const Index = ({ match }) => {
                 <NavLink to="/total-paid">Total Paid</NavLink>
                 <NavLink to="/payment-lists">Payment Lists</NavLink>
                 <NavLink to="/deposits">Deposits</NavLink>
+                <NavLink to="/notes">Notes</NavLink>
               </style.LinkWrapper>
             </div>
             <div className="col-md-10" style={{ minHeight: '400px' }}>
               <React.Suspense fallback={<p></p>}>
                 <Switch>
                   <Route path={`/payment-lists`} component={PaymentLists} />
+                  <Route path={`/notes`} render={(props) => <Notes {...props} studentId={studentId} />} />
                   <Route path={`/deposits`} component={Deposit} />
                   <Route exact path={`/edit`} component={Edit} />
                   <Route exact path={`/total-paid`} render={props => <TotalPaid {...props} studentId={studentId} />} />
