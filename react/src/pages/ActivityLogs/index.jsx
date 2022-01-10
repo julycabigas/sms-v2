@@ -77,7 +77,7 @@ const ActivityLogs = () => {
         </TableWrapper>
         </div> 
       </Box>
-      {logData && (
+      {logData && logData.totalDocs > logData.limit && (
         <PaginationWrapper className="mb-3">
           <Pagination 
             totalPages={logData.totalPages}

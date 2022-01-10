@@ -142,7 +142,7 @@ const List = () => {
             ))}
           </tbody>
         </table>
-        {noteDocs && (
+        {noteDocs && noteDocs.totalDocs > noteDocs.limit && (
           <PaginationWrapper>
             <Pagination 
               totalPages={noteDocs.totalPages}
