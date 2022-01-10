@@ -1,6 +1,7 @@
 const Student = require('../models/Student')
 const PaymentList = require('../models/PaymentList')
 const Deposit = require('../models/Deposit')
+const Plan = require('../models/Plan')
 const { Types } = require('mongoose')
 const moment = require('moment')
 const { _htmlPdf, _createPdf } = require('./studentPdf')

@@ -6,7 +6,7 @@ exports.index = async (req, res, next) => {
     const { studentId } = req.params;
     const match = { student: new Types.ObjectId(studentId) };
     const options = { 
-      populate: ['creator', 'student'], 
+      populate: ['creator'], 
       page: req.query.page || 1, 
       limit: 20,
     };
@@ -21,12 +21,36 @@ exports.index = async (req, res, next) => {
 exports.store = async (req, res, next) => {
   try {
     const { note } = req.body;
-    const newNote = await Note.create({ 
+    let newNote = await Note.create({ 
       student: req.params.studentId,
       creator: req.user.id, 
       note,  
     });
+    newNote = await Note.findById(newNote._id).populate('creator');
     res.send({ note: newNote, success: true });
+  }
+  catch(err) {
+    next(err);
+  }
+}
+
+exports.update = async (req, res, next) => {
+  try {
+    const { noteId } = req.params;
+    let note = await Note.findByIdAndUpdate(noteId, { ...req.body });
+    note = await Note.findById(noteId);
+    res.send({ note, success: true });
+  }
+  catch(err) {
+    next(err);
+  }
+}
+
+exports.deleteNote = async (req, res, next) => {
+  try {
+    const { noteId } = req.params;
+    await Note.findByIdAndDelete(noteId);
+    res.send({ success: true });
   }
   catch(err) {
     next(err);

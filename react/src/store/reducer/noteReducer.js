@@ -12,9 +12,17 @@ const note = createSlice({
     addNote(state, action) {
       state.noteDocs.docs.push(action.payload);
     },
+    updateNote(state, action) {
+      const { index, note } = action.payload;
+      state.noteDocs.docs[index] = note;
+    },
+    deleteNote(state, action) {
+      const { index } = action.payload;
+      state.noteDocs.docs = state.noteDocs.docs.filter((item, key) => key !== index);
+    }
   }
 })
 
-export const { allNote, addNote } = note.actions
+export const { allNote, addNote, updateNote, deleteNote } = note.actions
 
 export default note.reducer
