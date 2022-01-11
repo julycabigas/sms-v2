@@ -14,8 +14,10 @@ export const BackButton = styled.button`
   margin-right: 15px;
   font-size: 1.2em;
   background: var(--back-btn-bg);
+  color: var(--text-color);
   &:hover {
     opacity: 0.8;
+    color: var(--text-color);
   }
 `
 
