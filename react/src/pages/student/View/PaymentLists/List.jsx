@@ -42,7 +42,7 @@ export const List = ({ listDocs, match, student ,payment, isFetching, totalDocs 
       <div className="lists-actions mb-3">
         <Link to={`${match.url}/add`} className="btn btn-sm btn-primary">Add Payment</Link>
       </div>
-      <ListContainer listDocs={listDocs} isFetching={isFetching} totalDocs={totalDocs} />
+      <ListContainer listDocs={listDocs} isFetching={isFetching} totalDocs={totalDocs} studentId={studentId} />
       {payment && (payment.totalDocs > payment.limit) && <PaginationWrapper className="p-0">
         <Pagination 
           totalPages={payment && payment.totalPages}
@@ -65,7 +65,7 @@ const mapStateToProps = (state) => ({
 export default connect(mapStateToProps)(List)
 
 
-const ListContainer = ({ listDocs, isFetching, totalDocs }) => {
+const ListContainer = ({ listDocs, isFetching, totalDocs, studentId }) => {
   const [editList, setEditList] = React.useState({ isEdit: false, index: null })
   const [disabledUpdateBtn, setDisabledUpdateBtn] = React.useState(false)
   const dispatch = useDispatch()
@@ -74,7 +74,7 @@ const ListContainer = ({ listDocs, isFetching, totalDocs }) => {
   const onDelete = React.useCallback(async (index) => {
     const deleteWarn = await warning({ title: 'Are you sure?' })
     if (deleteWarn.isConfirmed) {
-      const { studentId, _id: paymentListId } = listDocs[index]
+      const { _id: paymentListId } = listDocs[index]
       setDisabledUpdateBtn(true)
       const { data } = await http.put(`/api/student/${studentId}/payment_list/${paymentListId}`, { is_deleted: true })
       if (data) {
@@ -85,25 +85,36 @@ const ListContainer = ({ listDocs, isFetching, totalDocs }) => {
         }, 300)
       }
     }
-  }, [dispatch, listDocs])
+  }, [dispatch, listDocs, studentId])
 
   const onUpdate = React.useCallback(async (e) => {
-    e.preventDefault()
-    setDisabledUpdateBtn(true)
-    const payload = {}
-    const formData = new FormData(e.target)
-    for (const [key, value] of formData.entries()) {
-      payload[key] = value
+    try {
+      e.preventDefault()
+      setDisabledUpdateBtn(true)
+      const payload = {}
+      const formData = new FormData(e.target)
+      for (const [key, value] of formData.entries()) {
+        payload[key] = value
+      }
+      if (payload.amount === '' || payload.currency === '' || payload.date_paid === '' || payload.due_date === '' || payload.status === '') {
+        setDisabledUpdateBtn(false)
+        toast.error('Error: Please fill in all fields!');
+        return;
+      }
+      const { _id: paymentListId } = listDocs[editList.index]
+      const { data } = await http.put(`/api/student/${studentId}/payment_list/${paymentListId}`, {...payload})
+      setTimeout(() => {
+        toast.success('Successfully updated.');
+        dispatch( updatePaymentList({ index: editList.index, paymentData: data }) )
+        setDisabledUpdateBtn(false)
+        setEditList({ index: null, isEdit: false })
+      }, 300)
     }
-    const { studentId, _id: paymentListId } = listDocs[editList.index]
-    const { data } = await http.put(`/api/student/${studentId}/payment_list/${paymentListId}`, {...payload})
-    setTimeout(() => {
-      toast.success('Successfully updated.');
-      dispatch( updatePaymentList({ index: editList.index, paymentData: data }) )
-      setDisabledUpdateBtn(false)
-      setEditList({ index: null, isEdit: false })
-    }, 300)
-  }, [editList, listDocs, dispatch])
+    catch(err) {
+      setDisabledUpdateBtn(false);
+      toast.error(err.message);
+    }
+  }, [editList, listDocs, dispatch, studentId])
 
   return (
     <form onSubmit={onUpdate}>

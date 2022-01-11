@@ -38,7 +38,8 @@ export const ModalContainer = styled.div`
 
 export const ModalContent = styled.div`
   background: var(--box-bg);
-  min-width: ${props => props.width || '400px'};
+  width: ${props => props.width || '400px'};
+  max-width: 1600px;
   overflow: auto;
   border-radius: 7px;
   max-height: 100%;

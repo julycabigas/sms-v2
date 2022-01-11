@@ -84,7 +84,7 @@ const List = () => {
           setNoteModalContent(null);
         }}
         title="Note"
-        width="1000px"
+        width="800px"
       >
         <Modal.Body>
           {noteModalContent && (

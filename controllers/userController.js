@@ -123,3 +123,21 @@ exports.authToken = (req, res, next) => {
     next(err)
   }
 }
+
+exports.updateProfile = async (req, res, next) => {
+  try {
+    console.log(req.user.id);
+    const payload = { ...req.body }; 
+    if (req.body.photoBase64) {
+      payload['photo'] = uploadImageBase64(req.body.photoBase64, 'users');
+      delete payload.photoBase64;
+    }
+    let profile = await User.findByIdAndUpdate(req.user.id, { ...payload });
+    profile = await User.findById(req.user.id);
+    delete profile.password;
+    res.send({ profile, success: true });
+  }
+  catch(err) {
+    next(err);
+  }
+}

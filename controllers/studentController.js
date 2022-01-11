@@ -151,8 +151,8 @@ exports.update = async (req, res, next) => {
         logUpdates.push({ 
           key,  
           type: 'Updated',
-          from: student[key],
-          to: payloads[key],
+          from: key === 'plan' ? (await Plan.findById(student[key])).resultName : student[key],
+          to: key === 'plan' ? (await Plan.findById(payloads[key])).resultName : payloads[key],
         });
       }
     }
