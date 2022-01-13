@@ -51,7 +51,7 @@ const ActivityLogs = () => {
               </tr>
               {logData && logData.docs && logData.docs.map((doc, key) => (
                 <tr key={key}>
-                  <td style={{ verticalAlign: 'top' }}>{doc.time && moment(doc.time).format('MMM DD, YYYY hh:mm:ss A')}</td>
+                  <td style={{ verticalAlign: 'top' }}>{doc.time && moment(doc.time).format('ddd MMM DD, YYYY hh:mm:ss A')}</td>
                   <td style={{ verticalAlign: 'top' }}>
                     {user && user._id === doc.user._id ? 'You' : doc.user.name }
                   </td>
