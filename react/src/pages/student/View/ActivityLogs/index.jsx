@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import Box from 'components/Box'
 import { TableWrapper, PaginationWrapper } from 'styled';
 import { useAuth, useHttp, useQuery } from 'hooks';
 import Pagination from 'components/Pagination'
 import moment from 'moment'
 
-const ActivityLogs = () => {
+const ActivityLogs = ({ studentId }) => {
   const [logData, setLogData] = useState(null);
   const http = useHttp();
   const query = useQuery();
@@ -27,27 +26,21 @@ const ActivityLogs = () => {
 
   useEffect(() => {
     (async () => {
-      const { data }  = await http.get('/api/logs?' + queries);
+      const { data }  = await http.get(`/api/logs/${studentId}?${queries}`);
       setLogData(data);
     })(); 
-  }, [queries]);
+  }, [queries, studentId]);
 
   return (
     <>
-      <Box 
-        title="Activity Logs"
-        maxWidth="100%"
-        hasBackBtn={false}
-      >
-        <div className="py-3">
-          <TableWrapper className="table-responsive">
+      <div className="py-3">
+        <TableWrapper className="table-responsive">
           <table className="table mb-0">
             <tbody>
               <tr>
                 <th>Time</th>
                 <th>User</th>
                 <th>Activity</th>
-                <th>Ref</th>
               </tr>
               {logData && logData.docs && logData.docs.map((doc, key) => (
                 <tr key={key}>
@@ -64,24 +57,22 @@ const ActivityLogs = () => {
                     )}
                     </ul>
                   </td>
-                  <td style={{ verticalAlign: 'top' }}>{doc.reference && doc.reference.collectionName}</td>
                 </tr>
               ))}
               {!logData && (
                 <tr>
-                  <td colSpan={5} className="text-center">Loading...</td>
+                  <td colSpan={4} className="text-center">Loading...</td>
                 </tr>
               )}
               {logData && logData.docs && logData.docs.length === 0 && (
                 <tr>
-                  <td colSpan={5} className="text-center">No Records Found.</td>
+                  <td colSpan={4} className="text-center">No Records Found.</td>
                 </tr>
               )}
             </tbody>
           </table>
         </TableWrapper>
-        </div> 
-      </Box>
+      </div> 
       {logData && logData.totalDocs > logData.limit && (
         <PaginationWrapper className="mb-3">
           <Pagination 

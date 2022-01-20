@@ -10,6 +10,7 @@ import { allDeposit } from 'store/reducer/depositReducer'
 import { BsDownload } from 'react-icons/bs';
 import { GoFilePdf } from 'react-icons/go';
 import ActivityLogByRef from 'components/ActivityLogByRef';
+import ActivityLogs from './ActivityLogs';
 
 
 const Deposit = React.lazy(() => import('./Deposit'));
@@ -91,6 +92,7 @@ export const Index = ({ match }) => {
                 <NavLink to="/payment-lists">Payment Lists</NavLink>
                 <NavLink to="/deposits">Deposits</NavLink>
                 <NavLink to="/notes">Notes</NavLink>
+                <NavLink to="/activity-logs">Activity Logs</NavLink>
               </style.LinkWrapper>
             </div>
             <div className="col-md-10" style={{ minHeight: '400px' }}>
@@ -101,6 +103,11 @@ export const Index = ({ match }) => {
                   <Route path={`/deposits`} component={Deposit} />
                   <Route exact path={`/edit`} component={Edit} />
                   <Route exact path={`/total-paid`} render={props => <TotalPaid {...props} studentId={studentId} />} />
+                  <Route 
+                    exact 
+                    path={`/activity-logs`} 
+                    render={props => <ActivityLogs {...props} studentId={studentId} />} 
+                  />
                   <Route exact path={`/home`} component={Home} />
                   <Redirect from="/" to="/home" />
                 </Switch>

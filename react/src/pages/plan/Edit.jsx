@@ -46,7 +46,7 @@ export const Edit = ({ planId, onModalClose, modalShow }) => {
       setRecurrence(data.recurrence);
       setResultName(data.resultName);
     })();
-  }, []);
+  }, [planId]);
 
   return (
     <Modal 

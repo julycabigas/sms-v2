@@ -21,7 +21,7 @@ function Modal({ show, children, onClose, title, width, allowClickOutside = true
     }
     window.addEventListener('click', windowClick);
     return () => window.removeEventListener('click', windowClick);
-  }, [show]);
+  }, [show, allowClickOutside]);
 
   React.useEffect(() => {
     if (show) {

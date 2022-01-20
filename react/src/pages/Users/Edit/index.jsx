@@ -49,7 +49,7 @@ function Edit({ userId, modalShow, onModalClose }) {
   const onRemoveFile = useCallback(() => {
     setSelectedFile(null);
     setUserData({ ...userData, photo: null });
-  }, []);
+  }, [userData]);
 
   useEffect(() => {
     (async () => {
@@ -57,7 +57,7 @@ function Edit({ userId, modalShow, onModalClose }) {
       const { data } = await http.get('/api/user/' + userId);
       setUserData(data);
     })();
-  }, []);
+  }, [userId]);
 
   return (
     <Modal
