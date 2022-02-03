@@ -14,7 +14,7 @@ const app = express();
 global.__basedir = __dirname;
 
 mongoose.connect(
-  process.env.DB_PROD, 
+  process.env.DB_DEV, 
   {useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true}
 );
 db.on('error', console.error.bind(console, 'connection error:'));

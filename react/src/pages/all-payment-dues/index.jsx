@@ -99,15 +99,20 @@ const Wrapper = ({ children }) => {
   }
 
   const onFilter = () => {
-    query.set('dues', `${dueFromDate}~${dueToDate}`);
-    history.push('?' + query.toString());
+    if (!dueFromDate && !dueToDate){
+      history.push('?'); 
+    } else {
+      query.set('dues', `${dueFromDate}~${dueToDate}`);
+      history.push('?' + query.toString()); 
+    }   
+    
   }
 
   const disabledBtn = () => {
-    if (!dueFromDate || !dueToDate) {
-      return true;
-    }
-    return moment(dueFromDate).isSameOrAfter(dueToDate, 'day');
+    // if (!dueFromDate || !dueToDate) {
+    //   return true;
+    // }
+    // return moment(dueFromDate).isSameOrAfter(dueToDate, 'day');
   }
 
   return (
