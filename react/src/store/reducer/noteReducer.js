@@ -13,8 +13,9 @@ const note = createSlice({
       state.noteDocs.docs.push(action.payload);
     },
     updateNote(state, action) {
-      const { index, note } = action.payload;
-      state.noteDocs.docs[index] = note;
+      console.log(action.payload)
+      const index = state.noteDocs.docs.findIndex(item => item._id === action.payload._id)
+      state.noteDocs.docs[index] = action.payload
     },
     deleteNote(state, action) {
       const { index } = action.payload;

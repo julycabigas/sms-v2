@@ -2,6 +2,7 @@ import { useAuth, useHttp, useQuery } from 'hooks';
 import React, { useEffect, useState } from 'react';
 import { Link, Route, Switch } from 'react-router-dom';
 import AddNote from './AddNote';
+import EditNote from './EditNote';
 import { allNote } from 'store/reducer/noteReducer';
 import { useDispatch, useSelector } from 'react-redux';
 import { TableWrapper, PaginationWrapper } from 'styled';
@@ -11,6 +12,9 @@ import Pagination from 'components/Pagination';
 import { warning } from 'helpers/alert';
 import { toast } from 'react-toastify';
 import { deleteNote } from 'store/reducer/noteReducer';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
+import { AiOutlineConsoleSql } from 'react-icons/ai';
 
 const Notes = ({ match, studentId }) => {
   const http = useHttp();
@@ -33,19 +37,22 @@ const Notes = ({ match, studentId }) => {
         <Route exact path={`${match.url}/add`}>
           <AddNote studentId={studentId} />
         </Route>
+        <Route exact path={`${match.url}/:id/edit`}>
+          <EditNote />
+        </Route>
         <Route exact path={`${match.url}`}>
           <div className="d-flex justify-content-between align-items-center mb-3">
             <h5 className="mb-0">Notes</h5>
             <Link className="btn btn-primary btn-sm" to={`${match.url}/add`}>Add Note</Link>
           </div>
-          <List />
+          <List match={match}/>
         </Route>
       </Switch>
     </div>
   );
 }
 
-const List = () => {
+const List = ({match}) => {
   const { noteDocs } = useSelector(state => state.note);
   const [openNoteModal, setOpenNoteModal] = useState(false);
   const [noteModalContent, setNoteModalContent] = useState(null);
@@ -63,7 +70,7 @@ const List = () => {
       }
     }
   }
-  
+
   const noteHTMLtoText = (html) => {
     const d = document.createElement('div');
     d.innerHTML = html; 
@@ -101,6 +108,7 @@ const List = () => {
         </Modal.Body>
       </Modal>
       
+      
       <TableWrapper>
         <table className="table mb-0 border">
           <tbody>
@@ -136,6 +144,7 @@ const List = () => {
                 <td className="d-flex justify-content-end">
                   <MoreOption>
                     <button type="button" onClick={() => onDeleteNote(item._id, key)}>Delete</button>
+                    <Link className="" to={`${match.url}/${item._id}/edit`}>Edit</Link>
                   </MoreOption>
                 </td>
               </tr>

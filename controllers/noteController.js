@@ -34,11 +34,22 @@ exports.store = async (req, res, next) => {
   }
 }
 
+exports.get = async (req, res, next) => {
+  try {
+    const { noteId } = req.params;
+    const note = await Note.findById(noteId);
+    res.send(note);
+  }
+  catch(err) {
+    next(err);
+  }
+}
+
 exports.update = async (req, res, next) => {
   try {
     const { noteId } = req.params;
-    let note = await Note.findByIdAndUpdate(noteId, { ...req.body });
-    note = await Note.findById(noteId);
+    let note = await Note.findByIdAndUpdate(noteId, { ...req.body.note });
+    note = await Note.findById(noteId).populate('creator');
     res.send({ note, success: true });
   }
   catch(err) {
