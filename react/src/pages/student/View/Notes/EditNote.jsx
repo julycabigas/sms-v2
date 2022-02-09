@@ -39,9 +39,7 @@ const EditNote = () => {
       }, 300);
     }
   }
-
-  console.log(note)
-
+  
   return (
     <div className="mt-3">
       <Box 

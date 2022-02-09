@@ -13,7 +13,6 @@ const note = createSlice({
       state.noteDocs.docs.push(action.payload);
     },
     updateNote(state, action) {
-      console.log(action.payload)
       const index = state.noteDocs.docs.findIndex(item => item._id === action.payload._id)
       state.noteDocs.docs[index] = action.payload
     },

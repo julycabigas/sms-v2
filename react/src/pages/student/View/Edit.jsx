@@ -31,7 +31,15 @@ export const Edit = ({ studentDetails }) => {
       payload[key] = value
     }
     payload.studentId = studentDetails._id;
-    if (studentDetails.plan._id !== payload.plan) {
+    const paylist = await http.get(
+      `/api/student/${studentDetails._id}/payment_list?`
+    )
+    let createPaylist = false
+    if (paylist.data.docs.length == 0 && payload.payment_date_start){
+      createPaylist = true
+    }
+    
+    if (studentDetails.plan._id !== payload.plan || createPaylist) {
       const singlePlan = _plans && _plans.find(item => item._id === payload.plan)
       const _paymentLists = scheduleDateLists(payload.payment_date_start, singlePlan)
       const paymentLists = _paymentLists && _paymentLists.map(item => ({ 
@@ -46,7 +54,9 @@ export const Edit = ({ studentDetails }) => {
     if (paymentStatusForm && (studentDetails.payment_status !== paymentStatusForm)) {
       payload.paymentStatusHasChange = true;
     }
-    const { data } = await http.put(`/api/student/${studentDetails._id}`, payload)
+    // const { data } = await http.put(`/api/student/${studentDetails._id}`, payload)
+    const { data } = await http.put(`/api/student/${studentDetails._id}/v2`, payload)
+    console.log(data)
     setTimeout(() => {
       dispatch( getDetails({ isFetching: false, studentDetails: data.student }) )
       toast.success('Successfully updated.')
@@ -95,9 +105,10 @@ const mapStateToProps = (state) => ({
 export default connect(mapStateToProps)(Edit)
 
 const PaymentInfo = ({ studentDetails: _, plans: _plans, onPaymentStatusChange }) => {
-  const [paymentDateStartForm, setPaymentDateStartForm] = React.useState(_.payment_date_start)
+  const [paymentDateStartForm, setPaymentDateStartForm] = React.useState(_.payment_date_start ? _.payment_date_start : null)
   const [joinedDateForm, setJoinedDateForm] = React.useState(_.joined_date)
   const [planForm, setPlanForm] = React.useState(_.plan._id)
+  const [enableEdit, setEnableEdit] = React.useState(false)
   const defaultValues = {
     signed_contract: _.signed_contract,
     sales_rep: _.sales_rep,
@@ -105,6 +116,14 @@ const PaymentInfo = ({ studentDetails: _, plans: _plans, onPaymentStatusChange }
     payment_status: _.payment_status,
   }
   const { register } = useForm({ defaultValues })
+  const enablePDS = () => {
+    setEnableEdit(true)
+    setPaymentDateStartForm(_.payment_date_start)
+  }
+  const cancelPDS = () => {
+    setEnableEdit(false)
+    setPaymentDateStartForm(null)
+  }
 
   return (
     <Table className="table">
@@ -119,14 +138,23 @@ const PaymentInfo = ({ studentDetails: _, plans: _plans, onPaymentStatusChange }
           />
         } />
         <TableRow label="Payment Date Start:" value={
-          <DatePicker 
-            required
-            name="payment_date_start"
-            className="w-100"
-            format="YYYY-MM-DD"
-            value={moment.utc(paymentDateStartForm || new Date())}
-            onChange={(date, dateString) => setPaymentDateStartForm(dateString)}
-          />
+          enableEdit || _.payment_date_start ? (
+            <div style={{
+              display: "flex",
+            }}>
+              <DatePicker 
+              required
+              name="payment_date_start"
+              className="w-100"
+              format="YYYY-MM-DD"
+              value={moment.utc(paymentDateStartForm || new Date())}
+              onChange={(date, dateString) => setPaymentDateStartForm(dateString)}
+              />
+              {_.payment_date_start ? <></> : <DisBtn onClick={cancelPDS}>cancel</DisBtn> }
+            </div>
+          ) : (
+            <EnbBtn onClick={enablePDS}>enable</EnbBtn>
+          )
         } />
         <TableRow label="Signed Contract:" value={
           <Select 
@@ -257,4 +285,27 @@ const TableRow = ({ label, value }) => (
 
 const MediumTd = styled.td`
   font-size: 0.9em;
+`
+
+const EnbBtn = styled.button`
+  font-size: 0.9em;
+  border-radius: 2px;
+  border: 1px solid #dee2e6;
+  text-transform: uppercase;
+
+  &:hover{
+    cursor: pointer;
+  }
+`
+
+const DisBtn = styled.button`
+  font-size: 0.9em;
+  text-transform: uppercase;
+  border-radius: 2px;
+  border: 1px solid #dee2e6;
+  margin-left: 15px;
+
+  &:hover{
+    cursor: pointer;
+  }
 `

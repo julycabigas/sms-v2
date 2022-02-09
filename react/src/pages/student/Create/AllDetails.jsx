@@ -22,16 +22,16 @@ export const AllDetails = ({ student_details, payment_details }) => {
     e.preventDefault()
     setDisabledSubmit(true)
     const lists = scheduleDateLists(details.payment_date_start, plan)
-    const paymentLists = lists && lists.map(item => ({ 
-      due_date: item.date,
-      amount: plan.amount && plan.amount.$numberDecimal,
-      status: 'Pending',
-      currency: plan && plan.currency,
-      plan: plan && plan._id,
-    }))
+    // const paymentLists = lists && lists.map(item => ({ 
+    //   due_date: item.date,
+    //   amount: plan.amount && plan.amount.$numberDecimal,
+    //   status: 'Pending',
+    //   currency: plan && plan.currency,
+    //   plan: plan && plan._id,
+    // }))
     details.plan = details.payment_plan_id;
     delete details.payment_plan_id;
-    const { data } = await http.post('/api/student', {...details, paymentLists})
+    const { data } = await http.post('/api/student', {...details})
     if (data) {
       setTimeout(() => {
         setDisabledSubmit(false)
@@ -124,10 +124,10 @@ function ColTwo({details, plan}) {
               <TitleTd>Payment Plan:</TitleTd>
               <td>{plan && plan.resultName}</td>
             </tr>
-            <tr>
+            {/* <tr>
               <TitleTd>Payment Date Start:</TitleTd>
               <td>{details && moment.utc(details.payment_date_start).format('MMM DD, YYYY')}</td>
-            </tr>
+            </tr> */}
             <tr>
               <TitleTd>Signed Contract:</TitleTd>
               <td>{details && details.signed_contract}</td>

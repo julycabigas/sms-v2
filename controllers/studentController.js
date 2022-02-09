@@ -8,6 +8,7 @@ const { _htmlPdf, _createPdf } = require('./studentPdf')
 const AdmZip = require("adm-zip");
 const fs = require('fs');
 const { createLog, logTypes } = require('../utils/activityLog');
+const { createContext } = require('vm')
 
 exports.downloadStudent = async (req, res, next) => {
   try {
@@ -68,9 +69,7 @@ exports.index = async (req, res, next) => {
   try {
     const page = req.query.page || 1;
     const { name, email, plan, sales_rep, signed_contract, payment_status, payment_status_updated } = req.query;
-
     const match = {}
-
     if (name) match.$text = { $search: name }
     if (email) match.email = email
     if (sales_rep) match.sales_rep = sales_rep
@@ -103,7 +102,8 @@ exports.index = async (req, res, next) => {
 exports.store = async (req, res, next) => {
   try {
     const payload = req.body;
-    const { paymentLists, deposit } = req.body;
+    delete payload.payment_date_start
+    const { deposit } = req.body;
     const _studentDetails = {...payload}
     delete _studentDetails.paymentLists;
     delete _studentDetails.deposit;
@@ -112,7 +112,6 @@ exports.store = async (req, res, next) => {
       currency: deposit[0].currency
     });
     if (student) {
-      const listData = await _changePaymentAndDeposit({ studentId: student._id, deposits: deposit, paymentLists });
       await createLog({ 
         user: req.user.id,
         time: new Date(),
@@ -124,8 +123,8 @@ exports.store = async (req, res, next) => {
       });
       res.send({ 
         student, 
-        paymentLists: listData.paymentLists, 
-        deposits: listData.deposits 
+        // paymentLists: listData.paymentLists, 
+        // deposits: listData.deposits 
       }); 
     }
   }
@@ -190,6 +189,73 @@ exports.update = async (req, res, next) => {
   }
 }
 
+exports.updateV2 = async (req, res, next) => {
+  try {
+    const { studentId } = req.body;
+    let student = await Student.findById(studentId);
+    const payloads = { ...req.body };
+    const logUpdates = [];
+    for (const [key, value] of Object.entries(payloads)) {
+      if (key === 'payment_date_start' || key === 'joined_date') {
+        payloads.payment_date_start = new Date(moment.utc(payloads.payment_date_start).toString());
+        payloads.joined_date = new Date(moment.utc(payloads.joined_date).toString());
+      }
+      if(key !== "payment_date_start" && key !== "paymentLists" && key !== "studentId"){
+        if (payloads[key] != student[key].toString()) {
+          logUpdates.push({ 
+            key,  
+            type: 'Updated',
+            from: key === 'plan' ? (await Plan.findById(student[key])).resultName : student[key],
+            to: key === 'plan' ? (await Plan.findById(payloads[key])).resultName : payloads[key],
+          });
+        }
+      }
+    }
+    const response = {}
+    if (payloads.paymentLists){
+      logUpdates.push({ 
+        key: "payment_date_start",  
+        type: 'Updated',
+        from: "N/A",
+        to: payloads.payment_date_start,
+      });
+      
+      console.log("logUpdates:", logUpdates)
+      response.paymentLists = payloads.paymentLists && (
+        await _changePaymentList({ 
+          studentId, 
+          paymentLists: payloads.paymentLists, 
+          isUpdate: true 
+        })
+      )
+    }
+    const studentData = { ...req.body };
+    if (req.body.paymentStatusHasChange) {
+      studentData.payment_status_updated = moment().format('YYYY-MM-DD');
+    }
+    delete studentData.paymentLists;
+    delete studentData.paymentStatusHasChange;
+    response.student = await Student.findByIdAndUpdate(req.params.studentId, { 
+      ...studentData,
+    })
+    await createLog({ 
+      user: req.user.id,
+      time: new Date(),
+      type: logTypes.updateStudent,
+      updates: logUpdates,
+      reference: {
+        collectionName: 'students',
+        _id: student._id,
+      },
+    });
+    console.log(response)
+    res.send(response);
+  }
+  catch(err) {
+    next(err)
+  }
+}
+
 exports.get = async (req, res, next) => {
   try {
     const { studentId } = req.params;
@@ -223,6 +289,32 @@ exports.getPaymentList = async (req, res, next) => {
     next(err);
   }
 } 
+
+
+exports.getPaymentLatest = async (req, res, next) => {
+  try {
+   
+    const { studentId } = req.params;
+    const match = {
+      is_deleted: false, 
+      student: new Types.ObjectId(studentId),
+    };
+    const options = {
+      page, 
+      limit: 15,
+      sort: { due_date: 1 },
+    } 
+
+    // const paymentList = await PaymentList.paginate(match, options);
+    // res.send(paymentList);
+
+    const payment = await PaymentList.findOne({"student": studentId})
+    res.send(payment);
+  }
+  catch(err) {
+    next(err);
+  }
+}
 
 exports.updatePaymentList = async (req, res, next) => {
   try {

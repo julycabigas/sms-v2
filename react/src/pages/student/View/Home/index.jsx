@@ -1,9 +1,11 @@
-import React from 'react'
+import React, {useState} from 'react'
 import { connect } from 'react-redux'
 import { Table } from '../index.style'
 import styled from 'styled-components'
 import moment from 'moment'
 import { Link } from 'react-router-dom'
+import Modal from 'components/Modal';
+import { DatePicker } from 'components/Forms'
 
 export const HomeView = ({ studentDetails }) => {
   return (
@@ -33,18 +35,21 @@ const mapStateToProps = (state) => ({
 export default connect(mapStateToProps)(HomeView)
 
 const PaymentInfo = ({ studentDetails: _ }) => {
+  
   return (
-    <Table className="table">
-      <tbody>
-        <TableRow label="Payment Plan:" value={_.plan && _.plan.resultName} />
-        <TableRow label="Payment Date Start:" value={moment.utc(_.payment_date_start).format('MMM DD, YYYY')} />
-        <TableRow label="Signed Contract:" value={_.signed_contract} />
-        <TableRow label="Sales Rep:" value={_.sales_rep} />
-        <TableRow label="Payment Method:" value={_.payment_method} />
-        <TableRow label="Payment Status:" value={_.payment_status} />
-        <TableRow label="Joined Date:" value={moment.utc(_.joined_date).format('MMM DD, YYYY')} />
-      </tbody>
-    </Table>
+    <>
+      <Table className="table">
+        <tbody>
+          <TableRow label="Payment Plan:" value={_.plan && _.plan.resultName} />
+          <TableRow label="Payment Date Start:" value={ _.payment_date_start ? moment.utc(_.payment_date_start).format('MMM DD, YYYY') : "N/A" } />
+          <TableRow label="Signed Contract:" value={_.signed_contract} />
+          <TableRow label="Sales Rep:" value={_.sales_rep} />
+          <TableRow label="Payment Method:" value={_.payment_method} />
+          <TableRow label="Payment Status:" value={_.payment_status} />
+          <TableRow label="Joined Date:" value={moment.utc(_.joined_date).format('MMM DD, YYYY')} />
+        </tbody>
+      </Table>
+    </>
   )
 }
 
@@ -72,3 +77,4 @@ const TableRow = ({ label, value }) => (
 const MediumTd = styled.td`
   font-size: 0.9em;
 `
+
