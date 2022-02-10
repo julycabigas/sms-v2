@@ -220,7 +220,6 @@ exports.updateV2 = async (req, res, next) => {
         to: payloads.payment_date_start,
       });
       
-      console.log("logUpdates:", logUpdates)
       response.paymentLists = payloads.paymentLists && (
         await _changePaymentList({ 
           studentId, 
@@ -248,7 +247,6 @@ exports.updateV2 = async (req, res, next) => {
         _id: student._id,
       },
     });
-    console.log(response)
     res.send(response);
   }
   catch(err) {

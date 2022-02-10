@@ -56,7 +56,6 @@ export const Edit = ({ studentDetails }) => {
     }
     // const { data } = await http.put(`/api/student/${studentDetails._id}`, payload)
     const { data } = await http.put(`/api/student/${studentDetails._id}/v2`, payload)
-    console.log(data)
     setTimeout(() => {
       dispatch( getDetails({ isFetching: false, studentDetails: data.student }) )
       toast.success('Successfully updated.')
