@@ -62,7 +62,7 @@ const StudentInfo = ({ studentDetails: _ }) => (
       <TableRow label="Phone:" value={_.phone} />
       <TableRow label="Country:" value={_.country} />
       <TableRow label="Pipeline:" value={_.pipeline} />
-      <TableRow label="Funnel:" value={_.funnel} />
+      <TableRow label="Funnel:" value={_.funnel ? _.funnel : "N/A" } />
     </tbody>
   </Table>
 )

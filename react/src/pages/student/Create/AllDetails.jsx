@@ -189,10 +189,10 @@ function ColOne({details}) {
               <TitleTd>Pipeline:</TitleTd>
               <td>{details && details.pipeline}</td>
             </tr>
-            <tr>
+            {/* <tr>
               <TitleTd>Funnel:</TitleTd>
               <td>{details && details.funnel}</td>
-            </tr>
+            </tr> */}
           </tbody>
         </table>
       </div>

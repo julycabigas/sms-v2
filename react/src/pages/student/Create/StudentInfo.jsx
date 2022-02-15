@@ -73,12 +73,12 @@ export const Create = (props) => {
             options={['', ...pipelines].map(value => ({ value }))}
           />
         </FormGroup>
-        <FormGroup>
+        {/* <FormGroup>
           <Select label="Funnel" 
             {...register('funnel')}
             options={['', ...funnels].map(value => ({ value }))}
           />
-        </FormGroup>
+        </FormGroup> */}
         <div className="text-right">
           <Button type="button" variant="light" className="mr-2" 
             onClick={() => {

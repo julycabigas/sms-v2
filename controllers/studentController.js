@@ -197,11 +197,11 @@ exports.updateV2 = async (req, res, next) => {
     const logUpdates = [];
     for (const [key, value] of Object.entries(payloads)) {
       if (key === 'payment_date_start' || key === 'joined_date') {
-        payloads.payment_date_start = new Date(moment.utc(payloads.payment_date_start).toString());
-        payloads.joined_date = new Date(moment.utc(payloads.joined_date).toString());
+          payloads.payment_date_start = new Date(moment.utc(payloads.payment_date_start).toString());
+          payloads.joined_date = new Date(moment.utc(payloads.joined_date).toString());
       }
-      if(key !== "payment_date_start" && key !== "paymentLists" && key !== "studentId"){
-        if (payloads[key] != student[key].toString()) {
+      if(key !== "payment_date_start" && key !== "paymentLists" && key !== "studentId" && key !== "joined_date" && key !== "paymentStatusHasChange"){
+        if (payloads[key] != student[key]) {
           logUpdates.push({ 
             key,  
             type: 'Updated',
@@ -229,14 +229,18 @@ exports.updateV2 = async (req, res, next) => {
       )
     }
     const studentData = { ...req.body };
+    
+    
     if (req.body.paymentStatusHasChange) {
       studentData.payment_status_updated = moment().format('YYYY-MM-DD');
     }
     delete studentData.paymentLists;
     delete studentData.paymentStatusHasChange;
+
     response.student = await Student.findByIdAndUpdate(req.params.studentId, { 
       ...studentData,
     })
+
     await createLog({ 
       user: req.user.id,
       time: new Date(),

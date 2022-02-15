@@ -69,8 +69,6 @@ export const PaymentInfo2 = (props) => {
     return <Redirect to="/student/create/1" />
   }
 
-  console.log(paymentStatus)
-
   return (
     <Form onSubmit={handleSubmit(onSubmit)}>
       <FormHeader>
@@ -136,7 +134,6 @@ export const PaymentInfo2 = (props) => {
         <FormGroup>
           <Select label="Payment Status" 
             {...register('payment_status', { required: true })}
-            value={paymentStatus[7]}
             options={["", ...paymentStatus].map(value => ({ value }))}
           />
         </FormGroup>

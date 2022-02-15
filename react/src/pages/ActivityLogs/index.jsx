@@ -58,7 +58,7 @@ const ActivityLogs = () => {
                   <td>
                     <ul className="pl-3 mb-0">
                     {doc.updates.length ? doc.updates.map((item, key) => (
-                      <li key={key}>{item.type || ''} <span style={{ textDecoration: 'underline' }}>{itemKey(item.key)}</span> from {dateOrText(item.from)} to {dateOrText(item.to)}.</li>
+                      <li key={key}>{item.type || ''} <span style={{ textDecoration: 'underline' }}>{itemKey(item.key)}</span> from {item.from ? dateOrText(item.from) : "N/A"} to {dateOrText(item.to)}.</li>
                     )) : (
                       <li>{doc.type && doc.type.message}</li>
                     )}
