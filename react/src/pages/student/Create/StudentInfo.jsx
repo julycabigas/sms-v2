@@ -79,6 +79,11 @@ export const Create = (props) => {
             options={['', ...funnels].map(value => ({ value }))}
           />
         </FormGroup> */}
+        <FormGroup>
+          <Input label="Funnel" placeholder="Funnel" 
+            {...register('funnel')}
+          />
+        </FormGroup>
         <div className="text-right">
           <Button type="button" variant="light" className="mr-2" 
             onClick={() => {

@@ -6,7 +6,7 @@
     "start": "node ./bin/www",
     "dev": "concurrently \"nodemon ./bin/www\" \"cd react && yarn start\"",
     "build": "cd react && yarn install && yarn build",
-    "install-all": "yarn install && cd frontend && yarn install",
+    "install-all": "yarn install && cd react && yarn install",
     "serve": "nodemon ./bin/www"
   },
   "dependencies": {

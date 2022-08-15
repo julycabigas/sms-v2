@@ -1,4 +1,4 @@
-export const recurrence = ['Weekly', 'Fortnightly', 'Monthly'];
+export const recurrence = ['Weekly', 'Fortnightly', 'Monthly', 'Full Payment',];
 
 export const currencies = ['USD', 'AUD', 'EUR', 'GBP'];
 

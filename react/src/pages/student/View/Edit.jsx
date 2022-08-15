@@ -263,12 +263,13 @@ const StudentInfo = ({ studentDetails: _ }) => {
         />
       } />
       <TableRow label="Funnel:" value={
-        <Select 
-          // required
-          className="form-control-sm"
-          {...register('funnel')}
-          options={['', ...funnels].map(value => ({ value }))}
-        />
+        <>
+          <Input 
+            required
+            className="form-control-sm"
+            {...register('funnel')}
+          />
+        </>
       } />
       </tbody>
     </Table>
