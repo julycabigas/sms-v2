@@ -254,12 +254,19 @@ const StudentInfo = ({ studentDetails: _ }) => {
           {...register('country')}
         />
       } />
-      <TableRow label="Pipeline:" value={
+      {/* <TableRow label="Pipeline:" value={
         <Select 
           required
           className="form-control-sm"
           {...register('pipeline')}
           options={['', ...pipelines].map(value => ({ value }))}
+        />
+      } /> */}
+      <TableRow label="Pipeline:" value={
+        <Input 
+          required
+          className="form-control-sm"
+          {...register('pipeline')}
         />
       } />
       <TableRow label="Funnel:" value={
