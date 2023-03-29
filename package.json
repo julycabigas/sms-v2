@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "dev": "concurrently \"nodemon ./bin/www\" \"cd react && yarn start\"",
+    "dev": "concurrently \"nodemon ./bin/www\" \"cd react && npm start\"",
     "build": "cd react && yarn install && yarn build",
     "install-all": "yarn install && cd react && yarn install",
     "serve": "nodemon ./bin/www"
@@ -16,18 +16,19 @@
     "cookie-parser": "^1.4.5",
     "debug": "~2.6.9",
     "dotenv": "^10.0.0",
-    "express": "~4.16.1",
+    "express": "^4.18.2",
     "html-pdf-chrome": "^0.7.1",
     "http-errors": "~1.6.3",
-    "jsonwebtoken": "^8.5.1",
+    "jsonwebtoken": "^9.0.0",
     "moment": "^2.29.1",
     "mongoose": "^5.13.2",
     "mongoose-paginate-v2": "^1.4.2",
     "morgan": "~1.9.1",
-    "pug": "2.0.0-beta11"
+    "pug": "^2.0.4"
   },
   "devDependencies": {
     "concurrently": "^6.2.0",
+    "node": "^16.0.0",
     "nodemon": "^2.0.7"
   }
 }
